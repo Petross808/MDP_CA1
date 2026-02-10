@@ -1,9 +1,11 @@
 #include "game_state.hpp"
 #include "mission_status.hpp"
+#include "game_over_state.hpp"
+#include "pause_state.hpp"
 
-GameState::GameState(StateStack& stack, Context context) : State(stack, context), m_world(*context.window, *context.fonts), m_player(*context.player)
+GameState::GameState(StateStack& stack) : State(stack), m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound), m_player(*GetContext().player)
 {
-
+	GetContext().music->Play(MusicThemes::kMissionTheme);
 }
 
 void GameState::Draw()
@@ -18,12 +20,12 @@ bool GameState::Update(sf::Time dt)
 	if (!m_world.HasAlivePlayer())
 	{
 		m_player.SetMissionStatus(MissionStatus::kMissionFailure);
-		RequestStackPush(StateID::kGameOver);
+		RequestStackPush<GameOverState>();
 	}
 	else if (m_world.HasPlayerReachedEnd())
 	{
 		m_player.SetMissionStatus(MissionStatus::kMissionSuccess);
-		RequestStackPush(StateID::kGameOver);
+		RequestStackPush<GameOverState>();
 	}
 
 	CommandQueue& commands = m_world.GetCommandQueue();
@@ -40,7 +42,7 @@ bool GameState::HandleEvent(const sf::Event& event)
 	const auto* keypress = event.getIf<sf::Event::KeyPressed>();
 	if(keypress && keypress->scancode == sf::Keyboard::Scancode::Escape)
 	{
-		RequestStackPush(StateID::kPause);
+		RequestStackPush<PauseState>();
 	}
 	return true;
 }

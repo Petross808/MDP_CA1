@@ -6,11 +6,10 @@
 class MenuState : public State
 {
 public:
-	MenuState(StateStack& stack, Context context);
+	MenuState(StateStack& stack);
 	virtual void Draw() override;
 	virtual bool Update(sf::Time dt) override;
 	virtual bool HandleEvent(const sf::Event& event) override;
-	void UpdateOptionText();
 
 private:
 	sf::Sprite m_background_sprite;

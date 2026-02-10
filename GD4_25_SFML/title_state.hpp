@@ -6,7 +6,7 @@
 class TitleState : public State
 {
 public: 
-	TitleState(StateStack& stack, Context context);
+	TitleState(StateStack& stack);
 	virtual void Draw() override;
 	virtual bool Update(sf::Time dt) override;
 	virtual bool HandleEvent(const sf::Event& event) override;

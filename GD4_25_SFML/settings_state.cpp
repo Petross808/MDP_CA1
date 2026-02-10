@@ -1,21 +1,21 @@
 #include "settings_state.hpp"
 #include "Utility.hpp"
 
-SettingsState::SettingsState(StateStack& stack, Context context)
-    : State(stack, context)
+SettingsState::SettingsState(StateStack& stack)
+    : State(stack)
     , m_gui_container()
-    , m_background_sprite(context.textures->Get(TextureID::kTitleScreen))
+    , m_background_sprite(GetContext().textures->Get(TextureID::kTitleScreen))
 {
-    AddButtonLabel(Action::kMoveUp, 150.f, "Move Up", context);
-    AddButtonLabel(Action::kMoveDown, 200.f, "Move Down", context);
-    AddButtonLabel(Action::kMoveRight, 250.f, "Move Right", context);
-    AddButtonLabel(Action::kMoveLeft, 300.f, "Move Left", context);
-    AddButtonLabel(Action::kBulletFire, 350.f, "Fire", context);
-    AddButtonLabel(Action::kMissileFire, 400.f, "Missile Fire", context);
+    AddButtonLabel(Action::kMoveUp, 150.f, "Move Up", GetContext());
+    AddButtonLabel(Action::kMoveDown, 200.f, "Move Down", GetContext());
+    AddButtonLabel(Action::kMoveRight, 250.f, "Move Right", GetContext());
+    AddButtonLabel(Action::kMoveLeft, 300.f, "Move Left", GetContext());
+    AddButtonLabel(Action::kBulletFire, 350.f, "Fire", GetContext());
+    AddButtonLabel(Action::kMissileFire, 400.f, "Missile Fire", GetContext());
 
     UpdateLabels();
 
-	auto back_button = std::make_shared<gui::Button>(*context.fonts, *context.textures);
+	auto back_button = std::make_shared<gui::Button>(GetContext());
     back_button->setPosition(sf::Vector2f(80.f, 475.f));
     back_button->SetText("Back");
     back_button->SetCallback(std::bind(&SettingsState::RequestStackPop, this));
@@ -75,9 +75,9 @@ void SettingsState::UpdateLabels()
     }
 }
 
-void SettingsState::AddButtonLabel(Action action, float y, const std::string& text, Context context)
+void SettingsState::AddButtonLabel(Action action, float y, const std::string& text, StateStack::Context context)
 {
-    m_binding_buttons[static_cast<int>(action)] = std::make_shared<gui::Button>(*context.fonts, *context.textures);
+    m_binding_buttons[static_cast<int>(action)] = std::make_shared<gui::Button>(context);
     m_binding_buttons[static_cast<int>(action)]->setPosition(sf::Vector2f(80.f, y));
     m_binding_buttons[static_cast<int>(action)]->SetText(text);
     m_binding_buttons[static_cast<int>(action)]->SetToggle(true);

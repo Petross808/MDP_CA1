@@ -1,15 +1,16 @@
 #include "game_over_state.hpp"
 #include "utility.hpp"
 #include "constants.hpp"
+#include "menu_state.hpp"
 
-GameOverState::GameOverState(StateStack& stack, Context context)
-    : State(stack, context)
-    , m_game_over_text(context.fonts->Get(FontID::kMain))
+GameOverState::GameOverState(StateStack& stack)
+    : State(stack)
+    , m_game_over_text(GetContext().fonts->Get(FontID::kMain))
     , m_elapsed_time(sf::Time::Zero)
 {
-    sf::Vector2f window_size(context.window->getSize());
+    sf::Vector2f window_size(GetContext().window->getSize());
 
-    if (context.player->GetMissionStatus() == MissionStatus::kMissionSuccess)
+    if (GetContext().player->GetMissionStatus() == MissionStatus::kMissionSuccess)
     {
         m_game_over_text.setString("Mission Success");
     }
@@ -20,7 +21,7 @@ GameOverState::GameOverState(StateStack& stack, Context context)
 
     m_game_over_text.setCharacterSize(70);
     Utility::CentreOrigin(m_game_over_text);
-    m_game_over_text.setPosition(sf::Vector2f(0.5 * window_size.x, 0.4 * window_size.y));
+    m_game_over_text.setPosition(sf::Vector2f(0.5f * window_size.x, 0.4f * window_size.y));
 }
 
 void GameOverState::Draw()
@@ -44,7 +45,7 @@ bool GameOverState::Update(sf::Time dt)
     if (m_elapsed_time > sf::seconds(kGameOverToMenuPause))
     {
         RequestStackClear();
-        RequestStackPush(StateID::kMenu);
+        RequestStackPush<MenuState>();
     }
     return false;
 }

@@ -5,7 +5,7 @@
 class GameState : public State
 {
 public:
-	GameState(StateStack& stack, Context context);
+	GameState(StateStack& stack);
 	virtual bool Update(sf::Time delta_time) override;
 	virtual void Draw() override;
 	virtual bool HandleEvent(const sf::Event& event) override;

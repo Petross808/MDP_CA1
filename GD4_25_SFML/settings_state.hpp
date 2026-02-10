@@ -8,14 +8,14 @@
 class SettingsState : public State
 {
 public:
-	SettingsState(StateStack& stack, Context context);
+	SettingsState(StateStack& stack);
 	virtual void Draw() override;
 	virtual bool Update(sf::Time dt) override;
 	virtual bool HandleEvent(const sf::Event& event) override;
 
 private:
 	void UpdateLabels();
-	void AddButtonLabel(Action action, float y, const std::string& text, Context context);
+	void AddButtonLabel(Action action, float y, const std::string& text, StateStack::Context context);
 
 private:
 	sf::Sprite m_background_sprite;

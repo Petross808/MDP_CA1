@@ -1,12 +1,13 @@
 #include "title_state.hpp"
 #include "fontID.hpp"
 #include "utility.hpp"
+#include "menu_state.hpp"
 
-TitleState::TitleState(StateStack& stack, Context context) : State(stack, context), m_show_text(true), m_text_effect_time(sf::Time::Zero), m_background_sprite(context.textures->Get(TextureID::kTitleScreen)), m_text(context.fonts->Get(FontID::kMain))
+TitleState::TitleState(StateStack& stack) : State(stack), m_show_text(true), m_text_effect_time(sf::Time::Zero), m_background_sprite(GetContext().textures->Get(TextureID::kTitleScreen)), m_text(GetContext().fonts->Get(FontID::kMain))
 {
     m_text.setString("Press any key to continue");
     Utility::CentreOrigin(m_text);
-    m_text.setPosition(context.window->getView().getSize() / 2.f);
+    m_text.setPosition(GetContext().window->getView().getSize() / 2.f);
 }
 
 void TitleState::Draw()
@@ -37,7 +38,7 @@ bool TitleState::HandleEvent(const sf::Event& event)
     if (key_pressed)
     {
         RequestStackPop();
-        RequestStackPush(StateID::kMenu);
+        RequestStackPush<MenuState>();
     }
     return true;
 }

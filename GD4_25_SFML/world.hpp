@@ -5,11 +5,13 @@
 #include "scene_layers.hpp"
 #include "aircraft.hpp"
 #include "command_queue.hpp"
+#include "bloom_effect.hpp"
+#include "sound_player.hpp"
 
 class World
 {
 public:
-	explicit World(sf::RenderWindow& window, FontHolder& font);
+	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds);
 	void Update(sf::Time dt);
 	void Draw();
 
@@ -37,6 +39,8 @@ private:
 
 	void DestroyEntitiesOutsideView();
 
+	void UpdateSounds();
+
 private:
 	struct SpawnPoint
 	{
@@ -50,10 +54,12 @@ private:
 	};
 
 private:
-	sf::RenderWindow& m_window;
+	sf::RenderTarget& m_target;
+	sf::RenderTexture m_scene_texture;
 	sf::View m_camera;
 	TextureHolder m_textures;
 	FontHolder& m_fonts;
+	SoundPlayer& m_sounds;
 	SceneNode m_scene_graph;
 	std::array<SceneNode*, static_cast<int>(SceneLayers::kLayerCount)> m_scene_layers;
 	sf::FloatRect m_world_bounds;
@@ -65,5 +71,7 @@ private:
 
 	std::vector<SpawnPoint> m_enemy_spawn_points;
 	std::vector<Aircraft*> m_active_enemies;
+
+	BloomEffect m_bloom_effect;
 };
 

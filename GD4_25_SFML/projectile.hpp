@@ -14,7 +14,7 @@ public:
 	virtual sf::FloatRect GetBoundingRect() const override;
 
 	float GetMaxSpeed() const;
-	float GetDamage() const;
+	int GetDamage() const;
 
 private:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;

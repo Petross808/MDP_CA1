@@ -1,12 +1,9 @@
 #pragma once
 #include <memory>
-#include "resource_identifiers.hpp"
-#include "player.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
-#include "stateid.hpp"
-
-class StateStack;
-
+#include "music_player.hpp"
+#include "sound_player.hpp"
+#include "statestack.hpp"
 
 class State
 {
@@ -15,30 +12,36 @@ public:
 
 	struct Context
 	{
-		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player);
-		//TODO unique_ptr rather than raw pointers here?
+		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player, MusicPlayer& music, SoundPlayer& sound);
 		sf::RenderWindow* window;
 		TextureHolder* textures;
 		FontHolder* fonts;
 		Player* player;
+		MusicPlayer* music;
+		SoundPlayer* sound;
 	};
 
 public:
-	State(StateStack& stack, Context context);
+	State(StateStack& stack);
 	virtual ~State();
 	virtual void Draw() = 0;
 	virtual bool Update(sf::Time dt) = 0;
 	virtual bool HandleEvent(const sf::Event& event) = 0;
 
 protected:
-	void RequestStackPush(StateID state_id);
+	template<typename T>
+	void RequestStackPush();
 	void RequestStackPop();
 	void RequestStackClear();
 
-	Context GetContext() const;
+	StateStack::Context GetContext() const;
 
 private:
 	StateStack* m_stack;
-	Context m_context;
 };
 
+template<typename T>
+void State::RequestStackPush()
+{
+	m_stack->PushState<T>();
+}

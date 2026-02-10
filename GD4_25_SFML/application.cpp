@@ -8,19 +8,21 @@
 #include "settings_state.hpp"
 #include "game_over_state.hpp"
 
-Application::Application() : m_window(sf::VideoMode({ 1024, 768 }), "States", sf::Style::Close), m_stack(State::Context(m_window, m_textures, m_fonts, m_player))
+
+Application::Application() : 
+	m_window(sf::VideoMode({ kWindowWidth, kWindowHeight }), kWindowTitle, sf::Style::Close), 
+	m_stack(StateStack::Context(m_window, m_textures, m_fonts, m_player, m_music, m_sound))
 {
 	m_window.setKeyRepeatEnabled(false);
-	m_fonts.Load(FontID::kMain, "Media/Fonts/Sansation.ttf");
-	m_textures.Load(TextureID::kEagle, "Media/Textures/Eagle.png");
-	m_textures.Load(TextureID::kTitleScreen, "Media/Textures/TitleScreen.png");
-	m_textures.Load(TextureID::kButtonNormal, "Media/Textures/ButtonNormal.png");
-	m_textures.Load(TextureID::kButtonSelected, "Media/Textures/ButtonSelected.png");
-	m_textures.Load(TextureID::kButtonActivated, "Media/Textures/ButtonPressed.png");
 
-	RegisterStates();
-	m_stack.PushState(StateID::kTitle);
+	m_fonts.Load(FontID::kMain, "Media/Fonts/Sansation.ttf");
+	m_textures.Load(TextureID::kTitleScreen, "Media/Textures/TitleScreen.png");
+	m_textures.Load(TextureID::kButtons, "Media/Textures/Buttons.png");
+
+	m_stack.PushState<TitleState>();
 }
+
+Application::~Application() = default;
 
 void Application::Run()
 {
@@ -69,15 +71,4 @@ void Application::Render()
 	m_stack.Draw();
 	m_window.display();
 }
-
-void Application::RegisterStates()
-{
-	m_stack.RegisterState<TitleState>(StateID::kTitle);
-	m_stack.RegisterState<MenuState>(StateID::kMenu);
-	m_stack.RegisterState<GameState>(StateID::kGame);
-	m_stack.RegisterState<PauseState>(StateID::kPause);
-	m_stack.RegisterState<SettingsState>(StateID::kSettings);
-	m_stack.RegisterState<GameOverState>(StateID::kGameOver);
-}
-
 

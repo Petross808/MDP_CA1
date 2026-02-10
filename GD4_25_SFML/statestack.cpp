@@ -1,12 +1,26 @@
-#include "Statestack.hpp"
+#include "statestack.hpp"
+#include "state.hpp"
 
-StateStack::PendingChange::PendingChange(StackActions action, StateID state_id) : action(action), state_id(state_id)
+StateStack::PendingChange::PendingChange(std::function<void()> pending_call) : callback(pending_call)
 {
 }
 
-StateStack::StateStack(State::Context context) : m_context(context)
+StateStack::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts,
+	Player& player, MusicPlayer& music, SoundPlayer& sound) : 
+	window(&window),
+	textures(&textures),
+	fonts(&fonts),
+	player(&player),
+	music(&music),
+	sound(&sound)
 {
 }
+
+StateStack::StateStack(Context context) : m_context(context)
+{
+}
+
+StateStack::~StateStack() = default;
 
 void StateStack::Update(sf::Time dt)
 {
@@ -41,39 +55,27 @@ void StateStack::HandleEvent(const sf::Event& event)
 	ApplyPendingChanges();
 }
 
-void StateStack::PushState(StateID state_id)
-{
-	m_pending_list.emplace_back(PendingChange(StackActions::kPush, state_id));
-}
-
 void StateStack::PopState()
 {
-	m_pending_list.emplace_back(PendingChange(StackActions::kPop));
+	std::function<void()> clear_func = [this]() { m_stack.pop_back(); };
+
+	m_pending_list.emplace_back(PendingChange(clear_func));
 }
 
 void StateStack::ClearStack()
 {
-	m_pending_list.emplace_back(PendingChange(StackActions::kClear));
+	std::function<void()> clear_func = [this]() { m_stack.clear(); };
+
+	m_pending_list.emplace_back(PendingChange(clear_func));
 }
 
 void StateStack::ApplyPendingChanges()
 {
 	for (PendingChange change : m_pending_list)
 	{
-		switch (change.action)
-		{
-		case StackActions::kPush:
-			m_stack.emplace_back(CreateState(change.state_id));
-			break;
-		case StackActions::kPop:
-			m_stack.pop_back();
-			break;
-			//TODO should we clear the pending list when queueing up clear
-		case StackActions::kClear:
-			m_stack.clear();
-			break;
-		}
+		change.callback();
 	}
+
 	m_pending_list.clear();
 }
 
@@ -82,9 +84,7 @@ bool StateStack::IsEmpty() const
 	return m_stack.empty();
 }
 
-State::Ptr StateStack::CreateState(StateID state_id)
+StateStack::Context StateStack::GetContext() const
 {
-	auto found = m_state_factory.find(state_id);
-	assert(found != m_state_factory.end());
-	return found->second();
+	return m_context;
 }

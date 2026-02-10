@@ -4,27 +4,29 @@
 #include "utility.hpp"
 #include "menu_options.hpp"
 #include "button.hpp"
+#include "game_state.hpp"
+#include "settings_state.hpp"
 
-MenuState::MenuState(StateStack& stack, Context context) : State(stack, context), m_background_sprite(context.textures->Get(TextureID::kTitleScreen))
+MenuState::MenuState(StateStack& stack) : State(stack), m_background_sprite(GetContext().textures->Get(TextureID::kTitleScreen))
 {
-    auto play_button = std::make_shared<gui::Button>(*context.fonts, *context.textures);
+    auto play_button = std::make_shared<gui::Button>(GetContext());
     play_button->setPosition(sf::Vector2f(100, 250));
     play_button->SetText("Play");
     play_button->SetCallback([this]()
         {
             RequestStackPop();
-            RequestStackPush(StateID::kGame);
+            RequestStackPush<GameState>();
         });
 
-    auto settings_button = std::make_shared<gui::Button>(*context.fonts, *context.textures);
+    auto settings_button = std::make_shared<gui::Button>(GetContext());
     settings_button->setPosition(sf::Vector2f(100, 300));
     settings_button->SetText("Settings");
     settings_button->SetCallback([this]()
         {
-            RequestStackPush(StateID::kSettings);
+            RequestStackPush<SettingsState>();
         });
 
-    auto exit_button = std::make_shared<gui::Button>(*context.fonts, *context.textures);
+    auto exit_button = std::make_shared<gui::Button>(GetContext());
     exit_button->setPosition(sf::Vector2f(100, 350));
     exit_button->SetText("Exit");
     exit_button->SetCallback([this]()
@@ -35,6 +37,8 @@ MenuState::MenuState(StateStack& stack, Context context) : State(stack, context)
     m_gui_container.Pack(play_button);
     m_gui_container.Pack(settings_button);
     m_gui_container.Pack(exit_button);
+
+    GetContext().music->Play(MusicThemes::kMenuTheme);
 }
 
 void MenuState::Draw()

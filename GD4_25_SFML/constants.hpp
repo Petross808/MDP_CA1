@@ -1,4 +1,10 @@
 #pragma once
+
+// Metadata
+constexpr auto kWindowTitle = "Game";
+constexpr auto kWindowWidth = 1024;
+constexpr auto kWindowHeight = 768;
+
 constexpr auto kPlayerSpeed = 100.f;
 constexpr auto kTimePerFrame = 1.f / 60.f;
 constexpr auto kMaxFireRate = 5;

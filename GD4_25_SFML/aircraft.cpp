@@ -8,6 +8,7 @@
 #include "pickup.hpp"
 #include "projectile_type.hpp"
 #include <iostream>
+#include "sound_node.hpp"
 
 
 namespace
@@ -15,7 +16,7 @@ namespace
 	const std::vector<AircraftData> Table = InitializeAircraftData();
 }
 
-TextureID ToTextureID(AircraftType type)
+static TextureID ToTextureID(AircraftType type)
 {
 	switch (type)
 	{
@@ -32,7 +33,7 @@ TextureID ToTextureID(AircraftType type)
 Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontHolder& fonts) 
 	: Entity(Table[static_cast<int>(type)].m_hitpoints) 
 	, m_type(type) 
-	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture))
+	, m_sprite(textures.Get(Table[static_cast<int>(type)].m_texture), Table[static_cast<int>(type)].m_texture_rect)
 	, m_health_display(nullptr)
 	, m_missile_display(nullptr)
 	, m_distance_travelled(0.f) 
@@ -45,8 +46,15 @@ Aircraft::Aircraft(AircraftType type, const TextureHolder& textures, const FontH
 	, m_missile_ammo(2)
 	, m_is_marked_for_removal(false)
 	, m_spawned_pickup(false)
+	, m_show_explosion(true)
+	, m_explosion(textures.Get(TextureID::kExplosion))
+	, m_explosion_began(false)
 {
+	m_explosion.SetFrameSize(sf::Vector2i(256, 256));
+	m_explosion.SetNumFrames(16);
+	m_explosion.SetDuration(sf::seconds(1));
 	Utility::CentreOrigin(m_sprite);
+	Utility::CentreOrigin(m_explosion);
 
 	m_fire_command.category = static_cast<int>(ReceiverCategories::kScene);
 	m_fire_command.action = [this, &textures](SceneNode& node, sf::Time dt)
@@ -139,15 +147,15 @@ void Aircraft::UpdateMovementPattern(sf::Time dt)
 		//Move along the current direction for distance and then change direction
 		if (m_distance_travelled > directions[m_directions_index].m_distance)
 		{
-			m_directions_index = (m_directions_index + 1) % directions.size();
+			m_directions_index = (m_directions_index + 1) % (int)directions.size();
 			m_distance_travelled = 0;
 		}
 
 		//Compute the velocity
 		//Add 90 to move down the screen, 0 degrees is to the right
 		double radians = Utility::toRadians(directions[m_directions_index].m_angle + 90.f);
-		float vx = GetMaxSpeed() * std::cos(radians);
-		float vy = GetMaxSpeed() * std::sin(radians);
+		float vx = GetMaxSpeed() * (float)std::cos(radians);
+		float vy = GetMaxSpeed() * (float)std::sin(radians);
 
 		SetVelocity(sf::Vector2f(vx, vy));
 		m_distance_travelled += GetMaxSpeed() * dt.asSeconds();
@@ -176,36 +184,52 @@ void Aircraft::LaunchMissile()
 	}
 }
 
-void Aircraft::CreateBullet(SceneNode& node, const TextureHolder& textures) const
+void Aircraft::CreateBullet(SceneNode& node, const TextureHolder& textures)
 {
 	ProjectileType type = IsAllied() ? ProjectileType::kAlliedBullet : ProjectileType::kEnemyBullet;
 	switch (m_spread_level)
 	{
 	case 1:
-		CreateProjectile(node, type, 0.0f, 0.5f, textures);
+		if (m_is_firing)
+		{
+			CreateProjectile(node, type, 0.0f, 0.5f, textures);
+			m_is_firing = false;
+		}
 		break;
 	case 2:
-		CreateProjectile(node, type, -0.5f, 0.5f, textures);
-		CreateProjectile(node, type, 0.5f, 0.5f, textures);
+		if (m_is_firing)
+		{
+			CreateProjectile(node, type, -0.5f, 0.5f, textures);
+			CreateProjectile(node, type, 0.5f, 0.5f, textures);
+			m_is_firing = false;
+		}
 		break;
 	case 3:
-		CreateProjectile(node, type, 0.0f, 0.5f, textures);
-		CreateProjectile(node, type, -0.5f, 0.5f, textures);
-		CreateProjectile(node, type, 0.5f, 0.5f, textures);
+		if (m_is_firing)
+		{
+			CreateProjectile(node, type, 0.0f, 0.5f, textures);
+			CreateProjectile(node, type, -0.5f, 0.5f, textures);
+			CreateProjectile(node, type, 0.5f, 0.5f, textures);
+			m_is_firing = false;
+		}
 		break;
 	}
 }
 
-void Aircraft::CreateProjectile(SceneNode& node, ProjectileType type, float x_offset, float y_offset, const TextureHolder& textures) const
+void Aircraft::CreateProjectile(SceneNode& node, ProjectileType type, float x_offset, float y_offset, const TextureHolder& textures)
 {
-	std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
-	sf::Vector2f offset(x_offset * m_sprite.getGlobalBounds().size.x, y_offset * m_sprite.getGlobalBounds().size.y);
-	sf::Vector2f velocity(0, projectile->GetMaxSpeed());
+	if (m_is_launching_missile || m_is_firing)
+	{
+		std::unique_ptr<Projectile> projectile(new Projectile(type, textures));
+		sf::Vector2f offset(x_offset * m_sprite.getGlobalBounds().size.x, y_offset * m_sprite.getGlobalBounds().size.y);
+		sf::Vector2f velocity(0, projectile->GetMaxSpeed());
 
-	float sign = IsAllied() ? -1.f: 1.f;
-	projectile->setPosition(GetWorldPosition() + offset * sign);
-	projectile->SetVelocity(velocity * sign);
-	node.AttachChild(std::move(projectile));
+		float sign = IsAllied() ? -1.f : 1.f;
+		projectile->setPosition(GetWorldPosition() + offset * sign);
+		projectile->SetVelocity(velocity * sign);
+		node.AttachChild(std::move(projectile));
+		m_is_launching_missile = false;
+	}
 
 }
 
@@ -216,12 +240,33 @@ sf::FloatRect Aircraft::GetBoundingRect() const
 
 bool Aircraft::IsMarkedForRemoval() const
 {
-	return m_is_marked_for_removal;
+	return IsDestroyed() && (m_explosion.IsFinished() || !m_show_explosion);
+}
+
+void Aircraft::PlayLocalSound(CommandQueue& commands, SoundEffect effect)
+{
+	sf::Vector2f world_position = GetWorldPosition();
+
+	Command command;
+	command.category = static_cast<int>(ReceiverCategories::kSoundEffect);
+	command.action = DerivedAction<SoundNode>(
+		[effect, world_position](SoundNode& node, sf::Time)
+		{
+			node.PlaySound(effect, world_position);
+		});
+	commands.Push(command);
 }
 
 void Aircraft::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	target.draw(m_sprite, states);
+	if (IsDestroyed() && m_show_explosion)
+	{
+		target.draw(m_explosion, states);
+	}
+	else
+	{
+		target.draw(m_sprite, states);
+	}
 }
 
 void Aircraft::UpdateCurrent(sf::Time dt, CommandQueue& commands)
@@ -229,12 +274,22 @@ void Aircraft::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 	if (IsDestroyed())
 	{
 		CheckPickupDrop(commands);
+		m_explosion.Update(dt);
+		//Play explosion sound only once
+		if (!m_explosion_began)
+		{
+			SoundEffect soundEffect = (Utility::RandomInt(2) == 0) ? SoundEffect::kExplosion1 : SoundEffect::kExplosion2;
+			PlayLocalSound(commands, soundEffect);
+			m_explosion_began = true;
+		}
 		m_is_marked_for_removal = true;
 		return;
 	}
 	Entity::UpdateCurrent(dt, commands);
 	UpdateTexts();
 	UpdateMovementPattern(dt);
+
+	UpdateRollAnimation();
 
 	//Check if bullets or missiles were fired
 	CheckProjectileLaunch(dt, commands);
@@ -249,9 +304,9 @@ void Aircraft::CheckProjectileLaunch(sf::Time dt, CommandQueue& commands)
 
 	if (m_is_firing && m_fire_countdown <= sf::Time::Zero)
 	{
+		PlayLocalSound(commands, IsAllied() ? SoundEffect::kEnemyGunfire : SoundEffect::kAlliedGunfire);
 		commands.Push(m_fire_command);
 		m_fire_countdown += Table[static_cast<int>(m_type)].m_fire_interval / (m_fire_rate + 1.f);
-		m_is_firing = false;
 	}
 	else if (m_fire_countdown > sf::Time::Zero)
 	{
@@ -262,8 +317,9 @@ void Aircraft::CheckProjectileLaunch(sf::Time dt, CommandQueue& commands)
 	//Missile launch
 	if (m_is_launching_missile)
 	{
+		PlayLocalSound(commands, SoundEffect::kLaunchMissile);
 		commands.Push(m_missile_command);
-		m_is_launching_missile = false;
+		//m_is_launching_missile = false;
 	}
 }
 
@@ -290,5 +346,25 @@ void Aircraft::CheckPickupDrop(CommandQueue& commands)
 	if (!IsAllied() && Utility::RandomInt(kPickupDropChance) == 0 && !m_spawned_pickup)
 	{
 		commands.Push(m_drop_pickup_command);
+	}
+}
+
+void Aircraft::UpdateRollAnimation()
+{
+	if (Table[static_cast<int>(m_type)].m_has_roll_animation)
+	{
+		sf::IntRect textureRect = Table[static_cast<int>(m_type)].m_texture_rect;
+
+		//Roll left: Texture rect is offset once
+		if (GetVelocity().x < 0.f)
+		{
+			textureRect.position.x += textureRect.size.x;
+		}
+		else if (GetVelocity().x > 0.f)
+		{
+			textureRect.position.x += 2 * textureRect.size.x;
+		}
+		m_sprite.setTextureRect(textureRect);
+
 	}
 }

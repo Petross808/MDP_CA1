@@ -5,12 +5,16 @@
 #include <SFML/System/Angle.hpp>
 #include "Projectile.hpp"
 #include "pickup.hpp"
+#include "particle_node.hpp"
+#include "particletype.hpp"
+#include "sound_node.hpp"
 
-World::World(sf::RenderWindow& window, FontHolder& font)
-	: m_window(window)
-	, m_camera(window.getDefaultView())
+World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds)
+	: m_target(output_target)
+	, m_camera(output_target.getDefaultView())
 	, m_textures()
 	, m_fonts(font)
+	, m_sounds(sounds)
 	, m_scene_graph(ReceiverCategories::kNone)
 	, m_scene_layers()
 	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(m_camera.getSize().x, 3000.f))
@@ -18,6 +22,7 @@ World::World(sf::RenderWindow& window, FontHolder& font)
 	, m_scroll_speed(-100.f)
 	, m_player_aircraft(nullptr)
 {
+	static_cast<void>(m_scene_texture.resize({ m_target.getSize().x, m_target.getSize().y }));
 	LoadTextures();
 	BuildScene();
 	m_camera.setCenter(m_spawn_position);
@@ -32,6 +37,8 @@ void World::Update(sf::Time dt)
 
 	DestroyEntitiesOutsideView();
 	GuideMissiles();
+
+	UpdateSounds();
 
 	//Process commands from the scenegraph
 	while (!m_command_queue.IsEmpty())
@@ -53,8 +60,19 @@ void World::Update(sf::Time dt)
 
 void World::Draw()
 {
-	m_window.setView(m_camera);
-	m_window.draw(m_scene_graph);
+	if (PostEffect::IsSupported())
+	{
+		m_scene_texture.clear();
+		m_scene_texture.setView(m_camera);
+		m_scene_texture.draw(m_scene_graph);
+		m_scene_texture.display();
+		m_bloom_effect.Apply(m_scene_texture, m_target);
+	}
+	else
+	{
+		m_target.setView(m_camera);
+		m_target.draw(m_scene_graph);
+	}
 }
 
 
@@ -76,18 +94,11 @@ bool World::HasPlayerReachedEnd() const
 
 void World::LoadTextures()
 {
-	m_textures.Load(TextureID::kEagle, "Media/Textures/Eagle.png");
-	m_textures.Load(TextureID::kRaptor, "Media/Textures/Raptor.png");
-	m_textures.Load(TextureID::kLandscape, "Media/Textures/Desert.png");
-	m_textures.Load(TextureID::kBullet, "Media/Textures/Bullet.png");
-	m_textures.Load(TextureID::kMissile, "Media/Textures/Missile.png");
-
-	m_textures.Load(TextureID::kHealthRefill, "Media/Textures/HealthRefill.png");
-	m_textures.Load(TextureID::kMissileRefill, "Media/Textures/MissileRefill.png");
-	m_textures.Load(TextureID::kFireSpread, "Media/Textures/FireSpread.png");
-	m_textures.Load(TextureID::kFireRate, "Media/Textures/FireRate.png");
+	m_textures.Load(TextureID::kEntities, "Media/Textures/Entities.png");
+	m_textures.Load(TextureID::kExplosion, "Media/Textures/Explosion.png");
 	m_textures.Load(TextureID::kFinishLine, "Media/Textures/FinishLine.png");
-
+	m_textures.Load(TextureID::kJungle, "Media/Textures/Jungle.png");
+	m_textures.Load(TextureID::kParticle, "Media/Textures/Particle.png");
 }
 
 void World::BuildScene()
@@ -95,20 +106,20 @@ void World::BuildScene()
 	//Initialise the different layers
 	for (int i = 0; i < static_cast<int>(SceneLayers::kLayerCount); i++)
 	{
-		ReceiverCategories category = (i == static_cast<int>(SceneLayers::kAir)) ? ReceiverCategories::kScene : ReceiverCategories::kNone;
+		ReceiverCategories category = (i == static_cast<int>(SceneLayers::kLowerAir)) ? ReceiverCategories::kScene : ReceiverCategories::kNone;
 		SceneNode::Ptr layer(new SceneNode(category));
 		m_scene_layers[i] = layer.get();
 		m_scene_graph.AttachChild(std::move(layer));
 	}
 
 	//Prepare the background
-	sf::Texture& texture = m_textures.Get(TextureID::kLandscape);
+	sf::Texture& texture = m_textures.Get(TextureID::kJungle);
 	sf::IntRect textureRect(m_world_bounds);
 	texture.setRepeated(true);
 
 	//Add the background sprite to the world
 	std::unique_ptr<SpriteNode> background_sprite(new SpriteNode(texture, textureRect));
-	background_sprite->setPosition(sf::Vector2f(0, 0));
+	background_sprite->setPosition(sf::Vector2f(m_world_bounds.position.x, m_world_bounds.position.y));
 	m_scene_layers[static_cast<int>(SceneLayers::kBackground)]->AttachChild(std::move(background_sprite));
 
 	//Add the finish line
@@ -123,7 +134,14 @@ void World::BuildScene()
 	m_player_aircraft = leader.get();
 	m_player_aircraft->setPosition(m_spawn_position);
 	m_player_aircraft->SetVelocity(40.f, m_scroll_speed);
-	m_scene_layers[static_cast<int>(SceneLayers::kAir)]->AttachChild(std::move(leader));
+	m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(leader));
+
+	//Add the particle nodes to the scene
+	std::unique_ptr<ParticleNode> smokeNode(new ParticleNode(ParticleType::kSmoke, m_textures));
+	m_scene_layers[static_cast<int>(SceneLayers::kLowerAir)]->AttachChild(std::move(smokeNode));
+
+	std::unique_ptr<ParticleNode> propellantNode(new ParticleNode(ParticleType::kPropellant, m_textures));
+	m_scene_layers[static_cast<int>(SceneLayers::kLowerAir)]->AttachChild(std::move(propellantNode));
 
 	/*std::unique_ptr<Aircraft> left_escort(new Aircraft(AircraftType::kRaptor, m_textures, m_fonts));
 	left_escort->setPosition(sf::Vector2f(- 80.f, 50.f));
@@ -134,6 +152,10 @@ void World::BuildScene()
 	m_player_aircraft->AttachChild(std::move(right_escort));*/
 
 	AddEnemies();
+
+	//Add sound effect node
+	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
+	m_scene_graph.AttachChild(std::move(soundNode));
 }
 
 void World::AdaptPlayerVelocity()
@@ -173,7 +195,7 @@ void World::SpawnEnemies()
 		std::unique_ptr<Aircraft> enemy(new Aircraft(spawn.m_type, m_textures, m_fonts));
 		enemy->setPosition(sf::Vector2f(spawn.m_x, spawn.m_y));
 		enemy->setRotation(sf::degrees(180.f));
-		m_scene_layers[static_cast<int>(SceneLayers::kAir)]->AttachChild(std::move(enemy));
+		m_scene_layers[static_cast<int>(SceneLayers::kUpperAir)]->AttachChild(std::move(enemy));
 		m_enemy_spawn_points.pop_back();
 	}
 }
@@ -259,7 +281,7 @@ void World::GuideMissiles()
 	m_active_enemies.clear();
 }
 
-bool MatchesCategories(SceneNode::Pair& colliders, ReceiverCategories type1, ReceiverCategories type2)
+static bool MatchesCategories(SceneNode::Pair& colliders, ReceiverCategories type1, ReceiverCategories type2)
 {
 	unsigned int category1 = colliders.first->GetCategory();
 	unsigned int category2 = colliders.second->GetCategory();
@@ -302,6 +324,7 @@ void World::HandleCollisions()
 			//Collision response
 			pickup.Apply(player);
 			pickup.Destroy();
+			player.PlayLocalSound(m_command_queue, SoundEffect::kCollectPickup);
 		}
 		else if (MatchesCategories(pair, ReceiverCategories::kPlayerAircraft, ReceiverCategories::kEnemyProjectile) || MatchesCategories(pair,ReceiverCategories::kEnemyAircraft, ReceiverCategories::kAlliedProjectile))
 		{
@@ -328,6 +351,17 @@ void World::DestroyEntitiesOutsideView()
 	});
 	m_command_queue.Push(command);
 
+}
+
+void World::UpdateSounds()
+{
+	sf::Vector2f listener_position;
+
+	listener_position = m_camera.getCenter();
+
+	m_sounds.SetListenerPosition(listener_position);
+
+	m_sounds.RemoveStoppedSounds();
 }
 
 

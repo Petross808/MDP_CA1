@@ -1,9 +1,10 @@
 #include "pause_state.hpp"
 #include "utility.hpp"
+#include "menu_state.hpp"
 
-PauseState::PauseState(StateStack& stack, Context context) : State(stack, context), m_paused_text(context.fonts->Get(FontID::kMain)), m_instruction_text(context.fonts->Get(FontID::kMain))
+PauseState::PauseState(StateStack& stack) : State(stack), m_paused_text(GetContext().fonts->Get(FontID::kMain)), m_instruction_text(GetContext().fonts->Get(FontID::kMain))
 {
-    sf::Vector2f view_size = context.window->getView().getSize();
+    sf::Vector2f view_size = GetContext().window->getView().getSize();
 
     m_paused_text.setString("Game Paused");
     m_paused_text.setCharacterSize(70);
@@ -13,6 +14,12 @@ PauseState::PauseState(StateStack& stack, Context context) : State(stack, contex
     m_instruction_text.setString("Press backspace to return to the main menu, esc to return to the game");
     Utility::CentreOrigin(m_instruction_text);
     m_instruction_text.setPosition(sf::Vector2f(0.5f * view_size.x, 0.6f * view_size.y));
+    GetContext().music->SetPaused(true);
+}
+
+PauseState::~PauseState()
+{
+    GetContext().music->SetPaused(false);
 }
 
 void PauseState::Draw()
@@ -48,7 +55,7 @@ bool PauseState::HandleEvent(const sf::Event& event)
     if (key_pressed->scancode == sf::Keyboard::Scancode::Backspace)
     {
         RequestStackClear();
-        RequestStackPush(StateID::kMenu);
+        RequestStackPush<MenuState>();
     }
     return false;
 }

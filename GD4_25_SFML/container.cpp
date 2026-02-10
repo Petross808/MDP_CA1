@@ -69,7 +69,7 @@ void gui::Container::Select(std::size_t index)
             m_children[m_selected_child]->Deselect();
         }
         m_children[index]->Select();
-        m_selected_child = index;
+        m_selected_child = (int)index;
     }
 }
 
@@ -83,7 +83,7 @@ void gui::Container::SelectNext()
     int next = m_selected_child;
     do
     {
-        next = (next + 1) % m_children.size();
+        next = (next + 1) % (int)m_children.size();
     } while (!m_children[next]->IsSelectable());
     Select(next);
 }
@@ -98,7 +98,7 @@ void gui::Container::SelectPrevious()
     int prev = m_selected_child;
     do
     {
-        prev = (prev + m_children.size() - 1) % m_children.size();
+        prev = (prev + (int)m_children.size() - 1) % (int)m_children.size();
     } while (!m_children[prev]->IsSelectable());
     Select(prev);
 }
