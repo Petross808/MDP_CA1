@@ -66,7 +66,7 @@ int Utility::RandomInt(int exclusive_max)
     return distr(RandomEngine);
 }
 
-int Utility::Length(sf::Vector2f vector)
+float Utility::Length(sf::Vector2f vector)
 {
     return sqrtf(powf(vector.x, 2) + powf(vector.y, 2));
 }
