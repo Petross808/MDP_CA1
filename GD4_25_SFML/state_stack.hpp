@@ -1,11 +1,17 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #pragma once
 #include <SFML/System/Clock.hpp>
-#include "stack_actions.hpp"
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+
 #include <map>
 #include <functional>
-#include "player.hpp"
+
+#include "player_controller.hpp"
 #include "resource_identifiers.hpp"
 #include "music_player.hpp"
 #include "sound_player.hpp"
@@ -17,12 +23,12 @@ class StateStack
 public:
 	struct Context
 	{
-		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player, MusicPlayer& music, SoundPlayer& sound);
+		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, PlayerController& player, MusicPlayer& music, SoundPlayer& sound);
 
 		sf::RenderWindow* window;
 		TextureHolder* textures;
 		FontHolder* fonts;
-		Player* player;
+		PlayerController* player;
 		MusicPlayer* music;
 		SoundPlayer* sound;
 	};

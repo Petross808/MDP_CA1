@@ -1,10 +1,16 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #pragma once
-#include "texture_id.hpp"
-#include "resource_holder.hpp"
 #include <SFML/Graphics/Font.hpp>
-#include "fontID.hpp"
-#include "shader_types.hpp"
-#include "sound_effect.hpp"
+
+#include "resource_holder.hpp"
+#include "e_texture_id.hpp"
+#include "e_font_id.hpp"
+#include "e_shader_id.hpp"
+#include "e_sound_id.hpp"
 
 namespace sf
 {
@@ -18,5 +24,5 @@ namespace sf
 
 typedef ResourceHolder<TextureID, sf::Texture> TextureHolder;
 typedef ResourceHolder<FontID, sf::Font> FontHolder;
-typedef ResourceHolder<ShaderTypes, sf::Shader> ShaderHolder;
-typedef ResourceHolder<SoundEffect, sf::SoundBuffer> SoundBufferHolder;
+typedef ResourceHolder<ShaderID, sf::Shader> ShaderHolder;
+typedef ResourceHolder<SoundID, sf::SoundBuffer> SoundBufferHolder;

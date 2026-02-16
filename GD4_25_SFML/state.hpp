@@ -1,25 +1,22 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #pragma once
-#include <memory>
 #include <SFML/Graphics/RenderWindow.hpp>
+
+#include <memory>
+
 #include "music_player.hpp"
 #include "sound_player.hpp"
-#include "statestack.hpp"
+#include "player_controller.hpp"
+#include "state_stack.hpp"
 
 class State
 {
 public:
 	typedef std::unique_ptr<State> Ptr;
-
-	struct Context
-	{
-		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, Player& player, MusicPlayer& music, SoundPlayer& sound);
-		sf::RenderWindow* window;
-		TextureHolder* textures;
-		FontHolder* fonts;
-		Player* player;
-		MusicPlayer* music;
-		SoundPlayer* sound;
-	};
 
 public:
 	State(StateStack& stack);

@@ -1,3 +1,8 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "container.hpp"
 
 gui::Container::Container() : m_selected_child(-1)

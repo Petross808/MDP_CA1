@@ -1,7 +1,13 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #pragma once
-#include "State.hpp"
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
+
+#include "State.hpp"
 
 class PauseState : public State
 {

@@ -1,11 +1,14 @@
-#include "sound_player.hpp"
-
-#include "sound_effect.hpp"
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
 
 #include <SFML/Audio/Listener.hpp>
 
 #include <cmath>
 
+#include "sound_player.hpp"
+#include "e_sound_id.hpp"
 
 namespace
 {
@@ -19,24 +22,18 @@ namespace
 
 SoundPlayer::SoundPlayer()
 {
-	m_sound_buffers.Load(SoundEffect::kAlliedGunfire, "Media/Sound/AlliedGunfire.wav");
-	m_sound_buffers.Load(SoundEffect::kEnemyGunfire, "Media/Sound/EnemyGunfire.wav");
-	m_sound_buffers.Load(SoundEffect::kExplosion1, "Media/Sound/Explosion1.wav");
-	m_sound_buffers.Load(SoundEffect::kExplosion2, "Media/Sound/Explosion2.wav");
-	m_sound_buffers.Load(SoundEffect::kLaunchMissile, "Media/Sound/LaunchMissile.wav");
-	m_sound_buffers.Load(SoundEffect::kCollectPickup, "Media/Sound/CollectPickup.wav");
-	m_sound_buffers.Load(SoundEffect::kButton, "Media/Sound/Button.wav");
+	m_sound_buffers.Load(SoundID::kButton, "Media/Sound/Button.wav");
 
 	// Listener points towards the screen (default in SFML)
 	sf::Listener::setDirection({ 0.f, 0.f, -1.f });
 }
 
-void SoundPlayer::Play(SoundEffect effect)
+void SoundPlayer::Play(SoundID effect)
 {
 	Play(effect, GetListenerPosition());
 }
 
-void SoundPlayer::Play(SoundEffect effect, sf::Vector2f position)
+void SoundPlayer::Play(SoundID effect, sf::Vector2f position)
 {
 	m_sounds.emplace_back(m_sound_buffers.Get(effect));
 	sf::Sound& sound = m_sounds.back();

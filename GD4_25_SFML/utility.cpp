@@ -1,3 +1,8 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "Utility.hpp"
 #define _USE_MATH_DEFINES
 #include <math.h>

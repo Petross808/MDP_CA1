@@ -1,5 +1,10 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "command_queue.hpp"
-#include "statestack.hpp"
+#include "state_stack.hpp"
 
 void CommandQueue::Push(const Command& command)
 {

@@ -1,6 +1,12 @@
-#include "animation.hpp"
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+
+#include "animation.hpp"
 
 
 Animation::Animation(const sf::Texture& texture)

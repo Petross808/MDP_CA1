@@ -1,3 +1,8 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "scene_node.hpp"
 #include "utility.hpp"
 
@@ -8,7 +13,6 @@ SceneNode::SceneNode(ReceiverCategories category):m_children(), m_parent(nullptr
 void SceneNode::AttachChild(Ptr child)
 {
 	child->m_parent = this;
-	//Use emplace_back rather than push_back and understand why
 	m_children.emplace_back(std::move(child));
 }
 
@@ -103,7 +107,7 @@ void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	//Apply the transform to the current node
 	states.transform *= getTransform();
-	//Draw the nod eand its children with the changed transform
+	//Draw the node and its children with the changed transform
 	DrawCurrent(target, states);
 	DrawChildren(target, states);
 }
