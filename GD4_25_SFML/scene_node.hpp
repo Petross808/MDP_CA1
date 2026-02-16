@@ -1,6 +1,11 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "receiver_categories.hpp"
+#include "e_receiver_categories.hpp"
 #include "command.hpp"
 #include "command_queue.hpp"
 

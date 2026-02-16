@@ -1,21 +1,27 @@
-#pragma once
-#include "resource_holder.hpp"
-#include "resource_identifiers.hpp"
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
 
+#pragma once
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Sound.hpp>
-#include "sound_effect.hpp"
 
 #include <list>
+
+#include "resource_holder.hpp"
+#include "resource_identifiers.hpp"
+#include "e_sound_id.hpp"
+
 
 class SoundPlayer
 {
 public:
 	SoundPlayer();
 
-	void Play(SoundEffect effect);
-	void Play(SoundEffect effect, sf::Vector2f position);
+	void Play(SoundID effect);
+	void Play(SoundID effect, sf::Vector2f position);
 
 	void RemoveStoppedSounds();
 	void SetListenerPosition(sf::Vector2f position);

@@ -1,10 +1,16 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #pragma once
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include "player.hpp"
+
+#include "player_controller.hpp"
 #include "resource_holder.hpp"
 #include "resource_identifiers.hpp"
-#include "statestack.hpp"
+#include "state_stack.hpp"
 #include "music_player.hpp"
 #include "sound_player.hpp"
 
@@ -23,7 +29,7 @@ private:
 
 private:
 	sf::RenderWindow m_window;
-	Player m_player;
+	PlayerController m_player;
 
 	TextureHolder m_textures;
 	FontHolder m_fonts;

@@ -1,11 +1,16 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "button.hpp"
-#include "fontID.hpp"
+#include "e_font_id.hpp"
 #include "utility.hpp"
 #include "SFML/Graphics/Rect.hpp"
-#include "texture_id.hpp"
+#include "e_texture_id.hpp"
 
 gui::Button::Button(StateStack::Context context)
-    : m_sprite(context.textures->Get(TextureID::kButtons))
+    : m_sprite(context.textures->Get(TextureID::kButton))
     , m_text(context.fonts->Get(FontID::kMain), "", 16)
     , m_is_toggle(false)
     , m_sounds(*context.sound)
@@ -63,7 +68,7 @@ void gui::Button::Activate()
     {
         Deactivate();
     }
-    m_sounds.Play(SoundEffect::kButton);
+    m_sounds.Play(SoundID::kButton);
 }
 
 void gui::Button::Deactivate()

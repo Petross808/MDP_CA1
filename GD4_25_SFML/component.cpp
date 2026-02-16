@@ -1,3 +1,8 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "Component.hpp"
 
 gui::Component::Component() : m_is_selected(false), m_is_active(false)

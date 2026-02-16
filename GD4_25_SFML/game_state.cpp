@@ -1,11 +1,14 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "game_state.hpp"
-#include "mission_status.hpp"
-#include "game_over_state.hpp"
 #include "pause_state.hpp"
 
 GameState::GameState(StateStack& stack) : State(stack), m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound), m_player(*GetContext().player)
 {
-	GetContext().music->Play(MusicThemes::kMissionTheme);
+	GetContext().music->Play(MusicID::kGameMusic);
 }
 
 void GameState::Draw()
@@ -17,16 +20,7 @@ bool GameState::Update(sf::Time dt)
 {
 	m_world.Update(dt);
 
-	if (!m_world.HasAlivePlayer())
-	{
-		m_player.SetMissionStatus(MissionStatus::kMissionFailure);
-		RequestStackPush<GameOverState>();
-	}
-	else if (m_world.HasPlayerReachedEnd())
-	{
-		m_player.SetMissionStatus(MissionStatus::kMissionSuccess);
-		RequestStackPush<GameOverState>();
-	}
+	// TODO: Add end conditions and switch states
 
 	CommandQueue& commands = m_world.GetCommandQueue();
 	m_player.HandleRealTimeInput(commands);

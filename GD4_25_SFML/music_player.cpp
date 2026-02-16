@@ -1,13 +1,18 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "music_player.hpp"
 
 MusicPlayer::MusicPlayer()
 	: m_volume(10.f)
 {
-	m_filenames[MusicThemes::kMenuTheme] = "Media/Music/MenuTheme.ogg";
-	m_filenames[MusicThemes::kMissionTheme] = "Media/Music/MissionTheme.ogg";
+	m_filenames[MusicID::kMenuMusic] = "Media/Music/MenuTheme.ogg";
+	m_filenames[MusicID::kGameMusic] = "Media/Music/MissionTheme.ogg";
 }
 
-void MusicPlayer::Play(MusicThemes theme)
+void MusicPlayer::Play(MusicID theme)
 {
 	std::string filename = m_filenames[theme];
 

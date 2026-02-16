@@ -1,5 +1,10 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #pragma once
-#include "State.hpp"
+#include "state.hpp"
 #include "world.hpp"
 
 class GameState : public State
@@ -12,6 +17,6 @@ public:
 
 private:
 	World m_world;
-	Player& m_player;
+	PlayerController& m_player;
 };
 

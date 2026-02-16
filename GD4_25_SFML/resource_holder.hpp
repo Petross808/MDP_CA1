@@ -1,3 +1,8 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #pragma once
 #include <map>
 #include <string>
@@ -16,6 +21,3 @@ public:
 private:
     std::map<Identifier, std::unique_ptr<Resource>> m_resource_map;
 };
-
-#include "resource_holder.inl"
-    

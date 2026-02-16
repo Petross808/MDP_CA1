@@ -1,23 +1,25 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "application.hpp"
 #include "constants.hpp"
-#include "fontid.hpp"
-#include "game_state.hpp"
+#include "e_texture_id.hpp"
+#include "e_font_id.hpp"
 #include "title_state.hpp"
-#include "menu_state.hpp"
-#include "pause_state.hpp"
-#include "settings_state.hpp"
-#include "game_over_state.hpp"
-
+#include "resource_holder.hpp"
 
 Application::Application() : 
 	m_window(sf::VideoMode({ kWindowWidth, kWindowHeight }), kWindowTitle, sf::Style::Close), 
+	m_player(ReceiverCategories::kPlayer),
 	m_stack(StateStack::Context(m_window, m_textures, m_fonts, m_player, m_music, m_sound))
 {
 	m_window.setKeyRepeatEnabled(false);
 
 	m_fonts.Load(FontID::kMain, "Media/Fonts/Sansation.ttf");
+	m_textures.Load(TextureID::kButton, "Media/Textures/Buttons.png");
 	m_textures.Load(TextureID::kTitleScreen, "Media/Textures/TitleScreen.png");
-	m_textures.Load(TextureID::kButtons, "Media/Textures/Buttons.png");
 
 	m_stack.PushState<TitleState>();
 }

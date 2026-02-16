@@ -1,5 +1,10 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "state.hpp"
-#include "statestack.hpp"
+#include "state_stack.hpp"
 
 State::State(StateStack& stack) : m_stack(&stack)
 {

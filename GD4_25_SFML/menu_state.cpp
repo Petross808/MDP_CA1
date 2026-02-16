@@ -1,8 +1,13 @@
-#include "menu_state.hpp"
-#include "fontID.hpp"
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include <SFML/Graphics/Text.hpp>
+
+#include "menu_state.hpp"
+#include "e_font_id.hpp"
 #include "utility.hpp"
-#include "menu_options.hpp"
 #include "button.hpp"
 #include "game_state.hpp"
 #include "settings_state.hpp"
@@ -38,7 +43,7 @@ MenuState::MenuState(StateStack& stack) : State(stack), m_background_sprite(GetC
     m_gui_container.Pack(settings_button);
     m_gui_container.Pack(exit_button);
 
-    GetContext().music->Play(MusicThemes::kMenuTheme);
+    GetContext().music->Play(MusicID::kMenuMusic);
 }
 
 void MenuState::Draw()

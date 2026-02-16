@@ -1,5 +1,10 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "title_state.hpp"
-#include "fontID.hpp"
+#include "e_font_id.hpp"
 #include "utility.hpp"
 #include "menu_state.hpp"
 

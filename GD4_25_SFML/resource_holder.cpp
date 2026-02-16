@@ -1,9 +1,22 @@
-//TODO ?? can we preinstantiate each type and write as .hpp and .cpp
-#pragma once
-#include "resource_holder.hpp"
-#include <string>
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Shader.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
+
+#include <string>
 #include <iostream>
+
+#include "resource_holder.hpp"
+#include "e_texture_id.hpp"
+#include "e_font_id.hpp"
+#include "e_shader_id.hpp"
+#include "e_sound_id.hpp"
+
 
 template<typename Identifier, typename Resource>
 void ResourceHolder<Identifier, Resource>::Load(const Identifier id, const std::string& filename)
@@ -14,6 +27,10 @@ void ResourceHolder<Identifier, Resource>::Load(const Identifier id, const std::
     {
         loaded = resource->openFromFile(filename);
     }
+    else if constexpr (std::is_same_v<Resource, sf::Shader>)
+    {
+        loaded = resource->loadFromFile(filename, sf::Shader::Type::Vertex);
+    }
     else
     {
         loaded = resource->loadFromFile(filename);
@@ -23,7 +40,7 @@ void ResourceHolder<Identifier, Resource>::Load(const Identifier id, const std::
         throw std::runtime_error("ResourceHolder::Load failed to load " + filename);
     }
     auto inserted = m_resource_map.insert(std::make_pair(id, std::move(resource)));
-    assert(inserted.second);
+    assert(inserted.second); 
 }
 
 template<typename Identifier, typename Resource>
@@ -38,6 +55,7 @@ void ResourceHolder<Identifier, Resource>::Load(const Identifier id, const std::
     auto inserted = m_resource_map.insert(std::make_pair(id, std::move(resource)));
     assert(inserted.second);
 }
+
 
 template<typename Identifier, typename Resource>
 const Resource& ResourceHolder<Identifier, Resource>::Get(Identifier id) const
@@ -55,3 +73,9 @@ Resource& ResourceHolder<Identifier, Resource>::Get(Identifier id)
     assert(found != m_resource_map.end());
     return *found->second;
 }
+
+template class ResourceHolder<TextureID, sf::Texture>;
+template class ResourceHolder<FontID, sf::Font>;
+template class ResourceHolder<ShaderID, sf::Shader>;
+template class ResourceHolder<SoundID, sf::SoundBuffer>;
+template void ResourceHolder<ShaderID, sf::Shader>::Load<sf::Shader::Type>(const ShaderID, const std::string&, const sf::Shader::Type&);

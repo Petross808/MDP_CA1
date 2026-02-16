@@ -1,10 +1,16 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #pragma once
+#include <functional>
+
 #include "component.hpp"
 #include "resource_identifiers.hpp"
-#include "button_type.hpp"
+#include "e_button_type.hpp"
 #include "state.hpp"
-#include <functional>
-#include "statestack.hpp"
+#include "state_stack.hpp"
 
 namespace gui
 {

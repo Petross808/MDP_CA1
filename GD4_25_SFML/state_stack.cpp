@@ -1,4 +1,9 @@
-#include "statestack.hpp"
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
+#include "state_stack.hpp"
 #include "state.hpp"
 
 StateStack::PendingChange::PendingChange(std::function<void()> pending_call) : callback(pending_call)
@@ -6,7 +11,7 @@ StateStack::PendingChange::PendingChange(std::function<void()> pending_call) : c
 }
 
 StateStack::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts,
-	Player& player, MusicPlayer& music, SoundPlayer& sound) : 
+	PlayerController& player, MusicPlayer& music, SoundPlayer& sound) : 
 	window(&window),
 	textures(&textures),
 	fonts(&fonts),
@@ -57,9 +62,9 @@ void StateStack::HandleEvent(const sf::Event& event)
 
 void StateStack::PopState()
 {
-	std::function<void()> clear_func = [this]() { m_stack.pop_back(); };
+	std::function<void()> pop_func = [this]() { m_stack.pop_back(); };
 
-	m_pending_list.emplace_back(PendingChange(clear_func));
+	m_pending_list.emplace_back(PendingChange(pop_func));
 }
 
 void StateStack::ClearStack()

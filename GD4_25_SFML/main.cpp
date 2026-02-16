@@ -1,5 +1,11 @@
-#include "application.hpp"
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include <iostream>
+
+#include "application.hpp"
 
 int main()
 {
