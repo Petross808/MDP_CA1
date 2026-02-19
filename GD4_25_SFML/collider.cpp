@@ -4,7 +4,7 @@
 
 #include "collider.hpp"
 
-Collider::Collider(float x, float y, Physics* physics) : m_physics(physics)
+Collider::Collider(float x, float y, Physics* physics, bool dynamic) : m_physics(physics), m_is_dynamic(dynamic)
 {
 	m_physics->Register(this);
 	setPosition({x, y});
@@ -18,6 +18,11 @@ Collider::~Collider()
 bool Collider::CheckCollision(Collider* other)
 {
 	return other->CollideWith(this);
+}
+
+bool Collider::IsDynamic() const
+{
+	return m_is_dynamic;
 }
 
 bool Collider::BoundingBoxOverlap(Collider* other)

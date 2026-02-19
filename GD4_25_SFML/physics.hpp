@@ -14,7 +14,8 @@ class Physics
 public:
 	typedef std::pair<Collider*, Collider*> Pair;
 private:
-	std::vector<Collider*> m_object_vector;
+	std::vector<Collider*> m_dynamic_object_vector;
+	std::vector<Collider*> m_static_object_vector;
 
 private:
 	void CheckCollision(Collider* first, Collider* second, std::vector<Pair>& collisions);

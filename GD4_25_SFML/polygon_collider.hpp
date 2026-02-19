@@ -11,7 +11,7 @@ private:
 	std::vector<sf::Vector2f> m_vertices;
 
 public:
-	PolygonCollider(float x, float y, std::vector<sf::Vector2f>& vertices, Physics* physics);
+	PolygonCollider(float x, float y, std::vector<sf::Vector2f>& vertices, Physics* physics, bool dynamic = false);
 
 	virtual bool CheckCollision(Collider* other) override;
 

@@ -18,12 +18,13 @@ class Collider : public SceneNode
 {
 private:
 	Physics* m_physics;
+	bool m_is_dynamic;
 
 protected:
 	sf::Vector2f m_box_size;
 
 public:
-	Collider(float x, float y, Physics* physics);
+	Collider(float x, float y, Physics* physics, bool dynamic = false);
 	~Collider();
 	virtual bool CheckCollision(Collider* other) = 0;
 
@@ -32,5 +33,6 @@ public:
 	virtual bool CollideWith(CircleCollider* other) = 0;
 	virtual bool CollideWith(PolygonCollider* other) = 0;
 
+	bool IsDynamic() const;
 	bool BoundingBoxOverlap(Collider* other);
 };

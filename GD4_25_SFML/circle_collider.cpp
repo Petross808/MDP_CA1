@@ -7,7 +7,9 @@
 #include "polygon_collider.hpp"
 #include "utility.hpp"
 
-CircleCollider::CircleCollider(float x, float y, float radius, Physics* physics) : Collider(x, y, physics), m_radius(radius)
+CircleCollider::CircleCollider(float x, float y, float radius, Physics* physics, bool dynamic) :
+	Collider(x, y, physics, dynamic),
+	m_radius(radius)
 {
 	m_box_size.x = radius * 2;
 	m_box_size.y = radius * 2;
