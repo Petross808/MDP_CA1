@@ -5,17 +5,11 @@
 
 #include "sound_node.hpp"
 
-SoundNode::SoundNode(SoundPlayer& player)
-    : m_sounds(player)
+SoundNode::SoundNode(SoundPlayer& player) : SceneNode(ReceiverCategories::kSoundNode), m_sounds(player)
 {
 }
 
 void SoundNode::PlaySound(SoundID sound, sf::Vector2f position)
 {
     m_sounds.Play(sound, position);
-}
-
-unsigned int SoundNode::GetCategory() const
-{
-    return static_cast<int>(ReceiverCategories::kSoundEffect);
 }

@@ -5,6 +5,8 @@
 
 #include "world.hpp"
 #include "sound_node.hpp"
+#include "paddle.hpp"
+#include "wall.hpp"
 
 World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds)
 	: m_target(output_target)
@@ -12,8 +14,8 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_textures()
 	, m_fonts(font)
 	, m_sounds(sounds)
-	, m_scene_graph(ReceiverCategories::kNone)
-	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(m_camera.getSize().x, 3000.f))
+	, m_scene_graph(ReceiverCategories::kScene)
+	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(m_camera.getSize().x, m_camera.getSize().y))
 {
 	static_cast<void>(m_scene_texture.resize({ m_target.getSize().x, m_target.getSize().y }));
 	LoadTextures();
@@ -53,9 +55,35 @@ void World::LoadTextures()
 
 void World::BuildScene()
 {
-	//Add sound effect node
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
 	m_scene_graph.AttachChild(std::move(soundNode));
+
+	std::unique_ptr<Paddle> paddle(new Paddle(&m_physics));
+	m_scene_graph.AttachChild(std::move(paddle));
+
+	float wall_width = 20;
+
+	std::unique_ptr<Wall> wall1(new Wall(0, 0, m_world_bounds.size.x, wall_width, &m_physics));
+	std::unique_ptr<Wall> wall2(new Wall(0, m_world_bounds.size.y - wall_width, m_world_bounds.size.x, wall_width, &m_physics));
+	std::unique_ptr<Wall> wall3(new Wall(0, 0, wall_width, m_world_bounds.size.y, &m_physics));
+	std::unique_ptr<Wall> wall4(new Wall(m_world_bounds.size.x - wall_width, 0, wall_width, m_world_bounds.size.y, &m_physics));
+
+	m_scene_graph.AttachChild(std::move(wall1));
+	m_scene_graph.AttachChild(std::move(wall2));
+	m_scene_graph.AttachChild(std::move(wall3));
+	m_scene_graph.AttachChild(std::move(wall4));
+
+	std::unique_ptr<Wall> rectWall(new Wall(500, 350, 80, 80, &m_physics));
+	m_scene_graph.AttachChild(std::move(rectWall));
+
+	std::unique_ptr<Wall> circleWall(new Wall(700, 350, 50, &m_physics));
+	m_scene_graph.AttachChild(std::move(circleWall));
+
+
+	std::vector<sf::Vector2f> triangle{ {-30, 0},{30, 0},{0, 60} };
+	std::unique_ptr<Wall> triWall(new Wall(500, 550, triangle, &m_physics));
+	m_scene_graph.AttachChild(std::move(triWall));
+
 }
 
 sf::FloatRect World::GetViewBounds() const
@@ -63,35 +91,15 @@ sf::FloatRect World::GetViewBounds() const
 	return sf::FloatRect(m_camera.getCenter() - m_camera.getSize() / 2.f, m_camera.getSize());;
 }
 
-static bool MatchesCategories(SceneNode::Pair& colliders, ReceiverCategories type1, ReceiverCategories type2)
-{
-	unsigned int category1 = colliders.first->GetCategory();
-	unsigned int category2 = colliders.second->GetCategory();
-
-	if ((static_cast<int>(type1) & category1) && (static_cast<int>(type2) & category2))
-	{
-		return true;
-	}
-	else if ((static_cast<int>(type1) & category2) && (static_cast<int>(type2) & category1))
-	{
-		std::swap(colliders.first, colliders.second);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-
-}
-
 void World::HandleCollisions()
 {
-	std::set<SceneNode::Pair> collision_pairs;
-	m_scene_graph.CheckSceneCollision(m_scene_graph, collision_pairs);
+	std::vector<Physics::Pair> results;
+	m_physics.EvaluateAll(results);
 
-	for (SceneNode::Pair pair : collision_pairs)
+	for (auto& collision : results)
 	{
-		
+		collision.first->EvaluateCollision(*collision.second);
+		collision.second->EvaluateCollision(*collision.first);
 	}
 }
 

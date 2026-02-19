@@ -6,7 +6,7 @@
 #include "scene_node.hpp"
 #include "utility.hpp"
 
-SceneNode::SceneNode(ReceiverCategories category):m_children(), m_parent(nullptr), m_default_category(category)
+SceneNode::SceneNode(ReceiverCategories category) : m_children(), m_parent(nullptr), m_default_category(category)
 {
 }
 
@@ -65,34 +65,12 @@ void SceneNode::OnCommand(const Command& command, sf::Time dt)
 	}
 }
 
-sf::FloatRect SceneNode::GetBoundingRect() const
-{
-	return sf::FloatRect();
-}
-
-void SceneNode::DrawBoundingRect(sf::RenderTarget& target, sf::RenderStates states, sf::FloatRect& rect) const
-{
-	sf::RectangleShape shape;
-	shape.setPosition(sf::Vector2f(rect.position.x, rect.position.y));
-	shape.setSize(sf::Vector2f(rect.size.x, rect.size.y));
-	shape.setFillColor(sf::Color::Transparent);
-	shape.setOutlineColor(sf::Color::Green);
-	shape.setOutlineThickness(1.f);
-	target.draw(shape);
-}
-
-void SceneNode::CheckSceneCollision(SceneNode& scene_graph, std::set<Pair>& collision_pairs)
-{
-	CheckNodeCollision(scene_graph, collision_pairs);
-	for (Ptr& child : scene_graph.m_children)
-	{
-		CheckSceneCollision(*child, collision_pairs);
-	}
-}
-
 void SceneNode::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
-	// Do nothing here
+}
+
+void SceneNode::OnCollision(Collider& other)
+{
 }
 
 void SceneNode::UpdateChildren(sf::Time dt, CommandQueue& commands)
@@ -112,11 +90,8 @@ void SceneNode::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	DrawChildren(target, states);
 }
 
-
-
 void SceneNode::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	// Do nothing
 }
 
 void SceneNode::DrawChildren(sf::RenderTarget& target, sf::RenderStates states) const
@@ -129,19 +104,7 @@ void SceneNode::DrawChildren(sf::RenderTarget& target, sf::RenderStates states) 
 
 unsigned int SceneNode::GetCategory() const
 {
-	return static_cast<unsigned int>(ReceiverCategories::kScene);
-}
-
-void SceneNode::CheckNodeCollision(SceneNode& node, std::set<Pair>& collision_pairs)
-{
-	if (this != &node && Collision(*this, node) && !IsDestroyed() && !node.IsDestroyed())
-	{
-		collision_pairs.insert(std::minmax(this, &node));
-	}
-	for (Ptr& child : m_children)
-	{
-		child->CheckNodeCollision(node, collision_pairs);
-	}
+	return static_cast<unsigned int>(m_default_category);
 }
 
 bool SceneNode::IsMarkedForRemoval() const
@@ -161,19 +124,25 @@ void SceneNode::RemoveWrecks()
 	std::for_each(m_children.begin(), m_children.end(), std::mem_fn(&SceneNode::RemoveWrecks));
 }
 
-float Distance(const SceneNode& lhs, const SceneNode& rhs)
+void SceneNode::EvaluateCollision(Collider& other)
 {
-	return Utility::Length(lhs.GetWorldPosition() - rhs.GetWorldPosition());
+	OnCollision(other);
+	if(m_parent != nullptr)
+	{
+		m_parent->OnCollision(other);
+		for (auto& child : m_parent->m_children)
+		{
+			child->OnCollision(other);
+		}
+	}
 }
 
-bool Collision(const SceneNode& lhs, const SceneNode& rhs)
+SceneNode* SceneNode::GetParent()
 {
-	if(lhs.GetBoundingRect().findIntersection(rhs.GetBoundingRect()) != std::nullopt)
-	{ 
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return m_parent;
+}
+
+SceneNode* SceneNode::GetParent() const
+{
+	return m_parent;
 }

@@ -24,6 +24,7 @@ public:
 	struct Context
 	{
 		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, PlayerController& player, MusicPlayer& music, SoundPlayer& sound);
+		~Context();
 
 		sf::RenderWindow* window;
 		TextureHolder* textures;

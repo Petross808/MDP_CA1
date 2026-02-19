@@ -21,6 +21,16 @@ StateStack::Context::Context(sf::RenderWindow& window, TextureHolder& textures, 
 {
 }
 
+StateStack::Context::~Context()
+{
+	window = nullptr;
+	textures = nullptr;
+	fonts = nullptr;
+	player = nullptr;
+	music = nullptr;
+	sound = nullptr;
+}
+
 StateStack::StateStack(Context context) : m_context(context)
 {
 }
