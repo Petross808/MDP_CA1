@@ -11,7 +11,7 @@ private:
 	float m_radius;
 
 public:
-	CircleCollider(float x, float y, float radius, Physics* physics, bool dynamic = false);
+	CircleCollider(float x, float y, float radius, Physics* physics, PhysicsBody* body = nullptr, bool trigger = false);
 
 	virtual bool CheckCollision(Collider* other) override;
 

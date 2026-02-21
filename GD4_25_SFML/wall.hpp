@@ -7,7 +7,7 @@
 #include "physics.hpp"
 
 class Wall : public SceneNode
-{
+{ 
 public:
 	Wall(float x, float y, float width, float height, Physics* physics);
 	Wall(float x, float y, float radius, Physics* physics);

@@ -7,8 +7,8 @@
 #include "polygon_collider.hpp"
 #include "utility.hpp"
 
-CircleCollider::CircleCollider(float x, float y, float radius, Physics* physics, bool dynamic) :
-	Collider(x, y, physics, dynamic),
+CircleCollider::CircleCollider(float x, float y, float radius, Physics* physics, PhysicsBody* body, bool trigger) :
+	Collider(x, y, physics, body, trigger),
 	m_radius(radius)
 {
 	m_box_size.x = radius * 2;
@@ -37,6 +37,10 @@ bool CircleCollider::CollideWith(BoxCollider* other)
 
 	if (depth > 0)
 	{
+		if (depth == m_radius)
+		{
+			offset = center - (boxMin + (other->GetBoxSize() / 2.f));
+		}
 		sf::Vector2f normal(offset.normalized());
 		ResolveCollision(other, normal, depth);
 		return true;

@@ -7,6 +7,7 @@
 #include "sound_node.hpp"
 #include "paddle.hpp"
 #include "wall.hpp"
+#include "ball.hpp"
 
 World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds)
 	: m_target(output_target)
@@ -35,6 +36,7 @@ void World::Update(sf::Time dt)
 	m_scene_graph.RemoveWrecks();
 	m_scene_graph.Update(dt, m_command_queue);
 
+	m_physics.SimulateAllBodies(dt);
 	HandleCollisions();
 }
 
@@ -83,6 +85,8 @@ void World::BuildScene()
 	std::unique_ptr<Wall> triWall(new Wall(500, 550, triangle, &m_physics));
 	m_scene_graph.AttachChild(std::move(triWall));
 
+	std::unique_ptr<Ball> ball(new Ball(400, 300, 20, &m_physics));
+	m_scene_graph.AttachChild(std::move(ball));
 }
 
 sf::FloatRect World::GetViewBounds() const
@@ -93,7 +97,7 @@ sf::FloatRect World::GetViewBounds() const
 void World::HandleCollisions()
 {
 	std::vector<Physics::Pair> results;
-	m_physics.EvaluateAll(results);
+	m_physics.EvaluateAllCollisions(results);
 
 	for (auto& collision : results)
 	{

@@ -5,6 +5,7 @@
 #pragma once
 #include "pawn.hpp"
 #include "physics.hpp"
+#include "physics_body.hpp"
 
 class Paddle : public Pawn
 {
@@ -19,5 +20,6 @@ private:
 
 private:
 	sf::Vector2f m_move_vector;
+	PhysicsBody m_physics_body;
 };
 

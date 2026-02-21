@@ -3,10 +3,11 @@
 */
 
 #include "collider.hpp"
+#include "utility.hpp"
 
-Collider::Collider(float x, float y, Physics* physics, bool dynamic, bool trigger) :
+Collider::Collider(float x, float y, Physics* physics, PhysicsBody* body, bool trigger) :
 	m_physics(physics),
-	m_is_dynamic(dynamic),
+	m_physics_body(body),
 	m_is_trigger(trigger)
 {
 	m_physics->Register(this);
@@ -25,7 +26,7 @@ bool Collider::CheckCollision(Collider* other)
 
 bool Collider::IsDynamic() const
 {
-	return m_is_dynamic;
+	return m_physics_body != nullptr;
 }
 
 bool Collider::IsTrigger() const
@@ -49,17 +50,80 @@ void Collider::ResolveCollision(Collider* other, sf::Vector2f& normal, float& de
 	if (m_is_trigger || other->m_is_trigger)
 		return;
 
-	if (m_is_dynamic && other->m_is_dynamic)
+	float elasticity;
+	sf::Vector2f relativeVelocity;
+	float combinedMass;
+	float strength;
+
+	if (IsDynamic() && other->IsDynamic())
 	{
-		GetParent()->move(-normal * depth / 2.f);
-		other->GetParent()->move(normal * depth / 2.f);
+		if (m_physics_body->IsKinematic() && !other->m_physics_body->IsKinematic())
+		{
+			other->m_physics_body->Move(normal * depth);
+		}
+		else if (!m_physics_body->IsKinematic() && other->m_physics_body->IsKinematic())
+		{
+			m_physics_body->Move(-normal * depth);
+		}
+		else
+		{
+			m_physics_body->Move(-normal * depth / 2.f);
+			other->m_physics_body->Move(normal * depth / 2.f);
+		}
+
+
+		if (m_physics_body->IsKinematic() && other->m_physics_body->IsKinematic() ||
+			!m_physics_body->IsKinematic() && !other->m_physics_body->IsKinematic())
+		{
+			elasticity = (m_physics_body->GetElasticity() + other->m_physics_body->GetElasticity()) / 2.f;
+		}
+		else if (m_physics_body->IsKinematic())
+		{
+			elasticity = other->m_physics_body->GetElasticity();
+		}
+		else
+		{
+			elasticity = m_physics_body->GetElasticity();
+		}
+
+		relativeVelocity = m_physics_body->GetVelocity() - other->m_physics_body->GetVelocity();
+		float speedOnNormal = Utility::DotProduct(relativeVelocity, normal);
+
+		if (-speedOnNormal >= 0.f) return;
+
+		float firstMass = m_physics_body->IsKinematic() ? 0 : (1 / m_physics_body->GetMass());
+		float secondMass = other->m_physics_body->IsKinematic() ? 0 : (1 / other->m_physics_body->GetMass());
+
+		combinedMass = firstMass + secondMass ;
+		strength = -(1 + elasticity) * speedOnNormal / (combinedMass == 0 ? 1 : combinedMass);
+
+		if (!m_physics_body->IsKinematic())
+		{
+			m_physics_body->ApplyImpulse(strength, normal);
+		}
+		if (!other->m_physics_body->IsKinematic())
+		{
+			other->m_physics_body->ApplyImpulse(-strength, normal);
+		}
 	}
-	else if (m_is_dynamic)
+	else if (IsDynamic())
 	{
-		GetParent()->move(-normal * depth);
+		m_physics_body->Move(-normal * depth);
+
+		elasticity = m_physics_body->GetElasticity();
+		relativeVelocity = m_physics_body->GetVelocity();
+		combinedMass = 1 / m_physics_body->GetMass();
+		strength = -(1 + elasticity) * Utility::DotProduct(relativeVelocity, normal) / combinedMass;
+		m_physics_body->ApplyImpulse(strength, normal);
 	}
 	else
 	{
-		other->GetParent()->move(normal * depth);
+		other->m_physics_body->Move(normal * depth);
+
+		elasticity = other->m_physics_body->GetElasticity();
+		relativeVelocity = other->m_physics_body->GetVelocity();
+		combinedMass = 1 / other->m_physics_body->GetMass();
+		strength = -(1 + elasticity) * Utility::DotProduct(relativeVelocity, normal) / combinedMass;
+		other->m_physics_body->ApplyImpulse(strength, normal);
 	}
 }

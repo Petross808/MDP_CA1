@@ -8,8 +8,8 @@
 #include "utility.hpp"
 
 
-PolygonCollider::PolygonCollider(float x, float y, std::vector<sf::Vector2f>& vertices, Physics* physics, bool dynamic) :
-	Collider(x, y, physics, dynamic),
+PolygonCollider::PolygonCollider(float x, float y, std::vector<sf::Vector2f>& vertices, Physics* physics, PhysicsBody* body, bool trigger) :
+	Collider(x, y, physics, body, trigger),
 	m_vertices(vertices)
 {
 	sf::Vector2f min(m_vertices[0]);

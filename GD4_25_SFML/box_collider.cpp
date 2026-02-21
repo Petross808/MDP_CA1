@@ -6,8 +6,8 @@
 #include "circle_collider.hpp"
 #include "polygon_collider.hpp"
 
-BoxCollider::BoxCollider(float x, float y, float width, float height, Physics* physics, bool dynamic) : 
-	Collider(x, y, physics, dynamic)
+BoxCollider::BoxCollider(float x, float y, float width, float height, Physics* physics, PhysicsBody* body, bool trigger) :
+	Collider(x, y, physics, body, trigger)
 {
 	m_box_size.x = width;
 	m_box_size.y = height;

@@ -7,9 +7,12 @@
 #include "circle_collider.hpp"
 #include "polygon_collider.hpp"
 #include "shape_node.hpp"
+#include <iostream>
 
 
-Paddle::Paddle(Physics* physics) : m_move_vector()
+Paddle::Paddle(Physics* physics) :
+	m_move_vector(),
+	m_physics_body(this, physics, 50.f, 1000, 2.f, 0.1f)
 {
 	std::vector<sf::Vector2f> polygon;
 	switch (3)
@@ -42,10 +45,11 @@ Paddle::Paddle(Physics* physics) : m_move_vector()
 	{
 		vert *= 40.f;
 	}
-	
 
 	setPosition(sf::Vector2f(150,150));
-	std::unique_ptr<SceneNode> collider = std::make_unique<PolygonCollider>(0.f, 0.f, polygon, physics, true);
+	m_physics_body.SetAsKinematic();
+
+	std::unique_ptr<Collider> collider = std::make_unique<PolygonCollider>(0.f, 0.f, polygon, physics, &m_physics_body);
 	AttachChild(std::move(collider));
 
 	std::unique_ptr<ShapeNode> shape(new ShapeNode(polygon));
@@ -62,9 +66,12 @@ void Paddle::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	if (m_move_vector != sf::Vector2f())
 	{
-		move(m_move_vector.normalized() * 3.f);
+		sf::Vector2f force = m_move_vector.normalized() * 1000.f;
+		m_physics_body.AddForce(force.x, force.y);
 		m_move_vector = { 0, 0 };
 	}
+
+	m_physics_body.Simulate(dt);
 }
 
 void Paddle::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const

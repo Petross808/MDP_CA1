@@ -8,8 +8,10 @@
 
 #include "physics.hpp"
 #include "scene_node.hpp"
+#include "physics_body.hpp"
 
 class Physics;
+class PhysicsBody;
 class BoxCollider;
 class CircleCollider;
 class PolygonCollider;
@@ -18,14 +20,14 @@ class Collider : public SceneNode
 {
 private:
 	Physics* m_physics;
-	bool m_is_dynamic;
+	PhysicsBody* m_physics_body;
 	bool m_is_trigger;
 
 protected:
 	sf::Vector2f m_box_size;
 
 public:
-	Collider(float x, float y, Physics* physics, bool dynamic = false, bool trigger = false);
+	Collider(float x, float y, Physics* physics, PhysicsBody* body = nullptr, bool trigger = false);
 	~Collider();
 	virtual bool CheckCollision(Collider* other) = 0;
 

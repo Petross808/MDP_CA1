@@ -8,7 +8,7 @@
 class BoxCollider : public Collider
 {
 public:
-	BoxCollider(float x, float y, float width, float height, Physics* physics, bool dynamic = false);
+	BoxCollider(float x, float y, float width, float height, Physics* physics, PhysicsBody* body = nullptr, bool trigger = false);
 	~BoxCollider();
 
 	virtual bool CheckCollision(Collider* other) override;

@@ -3,6 +3,7 @@
 */
 
 #include "physics.hpp"
+#include "utility.hpp"
 
 void Physics::CheckCollision(Collider* first, Collider* second, std::vector<Pair>& collisions)
 {
@@ -57,7 +58,26 @@ void Physics::Unregister(Collider* shape)
 	}
 }
 
-void Physics::EvaluateAll(std::vector<Pair>& result)
+void Physics::Register(PhysicsBody* body)
+{
+	m_physics_body_vector.emplace_back(body);
+}
+
+void Physics::Unregister(PhysicsBody* body)
+{
+	auto size = m_physics_body_vector.size();
+	for (int i = 0; i < size; i++)
+	{
+		if (body == m_physics_body_vector[i])
+		{
+			std::swap(m_physics_body_vector[i], m_physics_body_vector[size - 1]);
+			m_physics_body_vector.pop_back();
+			return;
+		}
+	}
+}
+
+void Physics::EvaluateAllCollisions(std::vector<Pair>& result)
 {
 	std::vector<Collider*>::iterator inner;
 	for (std::vector<Collider*>::iterator iter = m_dynamic_object_vector.begin(); iter != m_dynamic_object_vector.end(); iter++)
@@ -71,5 +91,13 @@ void Physics::EvaluateAll(std::vector<Pair>& result)
 		{
 			CheckCollision(*iter, static_obj, result);
 		}
+	}
+}
+
+void Physics::SimulateAllBodies(sf::Time dt)
+{
+	for (auto& body : m_physics_body_vector)
+	{
+		body->Simulate(dt);
 	}
 }
