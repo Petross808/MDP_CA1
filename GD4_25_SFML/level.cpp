@@ -22,25 +22,29 @@ void Level::CreateBounds(SceneNode* root, Physics* physics, sf::FloatRect world_
 }
 
 
-void Level::CreateClassic(SceneNode* root, Physics* physics)
+void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* texture_holder)
 {
-	std::unique_ptr<Paddle> paddle(new Paddle(physics));
-	root->AttachChild(std::move(paddle));
+	sf::Texture* wallGrey = &texture_holder->Get(TextureID::kWallGrey);
 
-	
+	std::unique_ptr<SceneNode> background(new SceneNode());
+	std::unique_ptr<Wall> rectWall(new Wall(50, 20, 100, 860, physics, wallGrey));
+	background->AttachChild(std::move(rectWall));
 
-	std::unique_ptr<Wall> rectWall(new Wall(500, 350, 80, 80, physics));
-	root->AttachChild(std::move(rectWall));
-
-	std::unique_ptr<Wall> circleWall(new Wall(700, 350, 50, physics));
-	root->AttachChild(std::move(circleWall));
-
+	std::unique_ptr<Wall> circleWall(new Wall(700, 350, 50, physics, wallGrey));
+	background->AttachChild(std::move(circleWall));
 
 	std::vector<sf::Vector2f> triangle{ {-30, 0},{30, 0},{0, 60} };
-	std::unique_ptr<Wall> triWall(new Wall(500, 550, triangle, physics));
-	root->AttachChild(std::move(triWall));
+	std::unique_ptr<Wall> triWall(new Wall(500, 550, triangle, physics, wallGrey));
+	background->AttachChild(std::move(triWall));
+
 
 	std::unique_ptr<Ball> ball(new Ball(400, 300, 20, physics));
 	root->AttachChild(std::move(ball));
 
+
+
+	root->AttachChild(std::move(background));
+
+	std::unique_ptr<Paddle> paddle(new Paddle(physics));
+	root->AttachChild(std::move(paddle));
 }

@@ -52,6 +52,10 @@ CommandQueue& World::GetCommandQueue()
 
 void World::LoadTextures()
 {
+	m_textures.Load(TextureID::kWallGrey, "Media/Textures/t_wall_grey.png");
+	m_textures.Get(TextureID::kWallGrey).setRepeated(true);
+
+	
 }
 
 void World::BuildScene()
@@ -62,7 +66,7 @@ void World::BuildScene()
 	Level::CreateBounds(&m_scene_graph,&m_physics, m_world_bounds, 20.f);
 
 	// TODO switch for other levels
-	Level::CreateClassic(&m_scene_graph, &m_physics);
+	Level::CreateClassic(&m_scene_graph, &m_physics, &m_textures);
 
 	
 }
