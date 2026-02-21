@@ -1,3 +1,8 @@
+/*
+* Petr Sulc - GD4b - D00261476
+*/
+
+#pragma once
 enum CollisionLayer
 {
 	kDefault = 1 << 0,

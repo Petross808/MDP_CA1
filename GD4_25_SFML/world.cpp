@@ -4,10 +4,8 @@
 */
 
 #include "world.hpp"
+#include "level.hpp"
 #include "sound_node.hpp"
-#include "paddle.hpp"
-#include "wall.hpp"
-#include "ball.hpp"
 
 World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds)
 	: m_target(output_target)
@@ -17,6 +15,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_sounds(sounds)
 	, m_scene_graph(ReceiverCategories::kScene)
 	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(m_camera.getSize().x, m_camera.getSize().y))
+	, m_physics()
 {
 	static_cast<void>(m_scene_texture.resize({ m_target.getSize().x, m_target.getSize().y }));
 	LoadTextures();
@@ -60,33 +59,12 @@ void World::BuildScene()
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
 	m_scene_graph.AttachChild(std::move(soundNode));
 
-	std::unique_ptr<Paddle> paddle(new Paddle(&m_physics));
-	m_scene_graph.AttachChild(std::move(paddle));
+	Level::CreateBounds(&m_scene_graph,&m_physics, m_world_bounds, 20.f);
 
-	float wall_width = 20;
-	std::unique_ptr<Wall> wall1(new Wall(0, 0, m_world_bounds.size.x, wall_width, &m_physics));
-	std::unique_ptr<Wall> wall2(new Wall(0, m_world_bounds.size.y - wall_width, m_world_bounds.size.x, wall_width, &m_physics));
-	std::unique_ptr<Wall> wall3(new Wall(0, 0, wall_width, m_world_bounds.size.y, &m_physics));
-	std::unique_ptr<Wall> wall4(new Wall(m_world_bounds.size.x - wall_width, 0, wall_width, m_world_bounds.size.y, &m_physics));
+	// TODO switch for other levels
+	Level::CreateClassic(&m_scene_graph, &m_physics);
 
-	m_scene_graph.AttachChild(std::move(wall1));
-	m_scene_graph.AttachChild(std::move(wall2));
-	m_scene_graph.AttachChild(std::move(wall3));
-	m_scene_graph.AttachChild(std::move(wall4));
-
-	std::unique_ptr<Wall> rectWall(new Wall(500, 350, 80, 80, &m_physics));
-	m_scene_graph.AttachChild(std::move(rectWall));
-
-	std::unique_ptr<Wall> circleWall(new Wall(700, 350, 50, &m_physics));
-	m_scene_graph.AttachChild(std::move(circleWall));
-
-
-	std::vector<sf::Vector2f> triangle{ {-30, 0},{30, 0},{0, 60} };
-	std::unique_ptr<Wall> triWall(new Wall(500, 550, triangle, &m_physics));
-	m_scene_graph.AttachChild(std::move(triWall));
-
-	std::unique_ptr<Ball> ball(new Ball(400, 300, 20, &m_physics));
-	m_scene_graph.AttachChild(std::move(ball));
+	
 }
 
 sf::FloatRect World::GetViewBounds() const

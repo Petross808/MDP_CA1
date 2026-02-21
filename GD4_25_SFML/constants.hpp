@@ -6,8 +6,8 @@
 #pragma once
 // Metadata
 constexpr auto kWindowTitle = "Game";
-constexpr auto kWindowWidth = 1024;
-constexpr auto kWindowHeight = 768;
+constexpr auto kWindowWidth = 1600;
+constexpr auto kWindowHeight = 900;
 
 constexpr auto actionCount = 4;
 

@@ -1,3 +1,7 @@
+/*
+* Petr Sulc - GD4b - D00261476
+*/
+
 #pragma once
 #include "scene_node.hpp"
 #include "physics.hpp"

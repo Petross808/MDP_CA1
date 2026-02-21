@@ -1,3 +1,7 @@
+/*
+* Petr Sulc - GD4b - D00261476
+*/
+
 #include "physics_body.hpp"
 
 #include <iostream>
