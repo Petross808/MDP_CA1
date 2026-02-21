@@ -7,11 +7,14 @@
 
 void Physics::CheckCollision(Collider* first, Collider* second, std::vector<Pair>& collisions)
 {
-	if (first->BoundingBoxOverlap(second))
+	if (first->CheckLayers(second))
 	{
-		if (first->CheckCollision(second))
+		if (first->BoundingBoxOverlap(second))
 		{
-			collisions.emplace_back(Pair(first, second));
+			if (first->CheckCollision(second))
+			{
+				collisions.emplace_back(Pair(first, second));
+			}
 		}
 	}
 }

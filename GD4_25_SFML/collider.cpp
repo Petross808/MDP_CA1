@@ -8,7 +8,9 @@
 Collider::Collider(float x, float y, Physics* physics, PhysicsBody* body, bool trigger) :
 	m_physics(physics),
 	m_physics_body(body),
-	m_is_trigger(trigger)
+	m_is_trigger(trigger),
+	m_layer(),
+	m_ignore_layers()
 {
 	m_physics->Register(this);
 	setPosition({x, y});
@@ -32,6 +34,26 @@ bool Collider::IsDynamic() const
 bool Collider::IsTrigger() const
 {
 	return m_is_trigger;
+}
+
+void Collider::SetLayer(CollisionLayer layer)
+{
+	m_layer = layer;
+}
+
+void Collider::SetIgnoreLayers(unsigned int layers)
+{
+	m_ignore_layers = layers;
+}
+
+bool Collider::CheckLayers(Collider* other) const
+{
+	if (m_ignore_layers & other->m_layer || other->m_ignore_layers & m_layer)
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool Collider::BoundingBoxOverlap(Collider* other)

@@ -9,6 +9,7 @@
 #include "physics.hpp"
 #include "scene_node.hpp"
 #include "physics_body.hpp"
+#include "e_collision_layer.hpp"
 
 class Physics;
 class PhysicsBody;
@@ -22,6 +23,8 @@ private:
 	Physics* m_physics;
 	PhysicsBody* m_physics_body;
 	bool m_is_trigger;
+	CollisionLayer m_layer;
+	unsigned int m_ignore_layers;
 
 protected:
 	sf::Vector2f m_box_size;
@@ -38,6 +41,10 @@ public:
 
 	bool IsDynamic() const;
 	bool IsTrigger() const;
+	void SetLayer(CollisionLayer layer);
+	void SetIgnoreLayers(unsigned int layers);
+
+	bool CheckLayers(Collider* other) const;
 	bool BoundingBoxOverlap(Collider* other);
 	void ResolveCollision(Collider* other, sf::Vector2f& normal, float& depth);
 };

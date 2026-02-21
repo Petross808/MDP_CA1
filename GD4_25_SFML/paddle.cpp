@@ -50,6 +50,8 @@ Paddle::Paddle(Physics* physics) :
 	m_physics_body.SetAsKinematic();
 
 	std::unique_ptr<Collider> collider = std::make_unique<PolygonCollider>(0.f, 0.f, polygon, physics, &m_physics_body);
+	collider->SetLayer(CollisionLayer::kPlayer);
+	collider->SetIgnoreLayers(CollisionLayer::kWall | CollisionLayer::kPlayer);
 	AttachChild(std::move(collider));
 
 	std::unique_ptr<ShapeNode> shape(new ShapeNode(polygon));
