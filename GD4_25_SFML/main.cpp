@@ -8,7 +8,7 @@
 #include "application.hpp"
 
 int main()
-{
+{	
 	try
 	{
 		Application app;

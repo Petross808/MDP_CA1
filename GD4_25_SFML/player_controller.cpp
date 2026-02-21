@@ -13,7 +13,11 @@ PlayerController::PlayerController(ReceiverCategories pawn_category) :
         Action("Move Up", true, sf::Keyboard::Scancode::W,
             Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.ApplyMove(0, -1); }), m_pawn_category)),
         Action("Move Down", true, sf::Keyboard::Scancode::S,
-            Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.ApplyMove(0, 1); }), m_pawn_category))
+            Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.ApplyMove(0, 1); }), m_pawn_category)),
+        Action("Move Left", true, sf::Keyboard::Scancode::A,
+            Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.ApplyMove(-1, 0); }), m_pawn_category)),
+        Action("Move Right", true, sf::Keyboard::Scancode::D,
+            Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.ApplyMove(1, 0); }), m_pawn_category))
     }
 {
 }

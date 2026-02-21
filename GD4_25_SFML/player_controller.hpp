@@ -23,7 +23,7 @@ public:
 	const Action* GetActionArray() const;
 
 private:
-	Action m_action_array[actionCount];
 	ReceiverCategories m_pawn_category;
+	Action m_action_array[actionCount];
 };
 

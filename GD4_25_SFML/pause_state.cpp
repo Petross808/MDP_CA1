@@ -24,7 +24,10 @@ PauseState::PauseState(StateStack& stack) : State(stack), m_paused_text(GetConte
 
 PauseState::~PauseState()
 {
-    GetContext().music->SetPaused(false);
+    if (GetContext().music != nullptr)
+    {
+        GetContext().music->SetPaused(false);
+    }
 }
 
 void PauseState::Draw()

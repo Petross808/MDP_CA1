@@ -8,5 +8,6 @@
 class Pawn : public SceneNode
 {
 public:
+	Pawn();
 	virtual void ApplyMove(float x, float y) = 0;
 };

@@ -75,3 +75,18 @@ float Utility::Length(sf::Vector2f vector)
 {
     return sqrtf(powf(vector.x, 2) + powf(vector.y, 2));
 }
+
+float Utility::SqrLength(sf::Vector2f vector)
+{
+    return powf(vector.x, 2) + powf(vector.y, 2);
+}
+
+float Utility::DotProduct(sf::Vector2f first, sf::Vector2f second)
+{
+    return first.x * second.x + first.y * second.y;
+}
+
+sf::Vector2f Utility::Abs(sf::Vector2f vector)
+{
+    return { std::abs(vector.x), std::abs(vector.y) };
+}

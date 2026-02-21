@@ -20,5 +20,8 @@ public:
 	static double ToDegrees(double angle);
 	static int RandomInt(int exclusive_max);
 	static float Length(sf::Vector2f vector);
+	static float SqrLength(sf::Vector2f vector);
+	static float DotProduct(sf::Vector2f first, sf::Vector2f second);
+	static sf::Vector2f Abs(sf::Vector2f vector);
 };
 

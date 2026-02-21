@@ -1,0 +1,33 @@
+/*
+* Petr Sulc - GD4b - D00261476
+*/
+
+#pragma once
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/ConvexShape.hpp>
+
+#include <memory>
+#include <vector>
+
+#include "scene_node.hpp"
+
+
+class ShapeNode : public SceneNode
+{
+public:
+	ShapeNode(float width, float height);
+	ShapeNode(float radius);
+	ShapeNode(std::vector<sf::Vector2f>& vertices);
+	~ShapeNode();
+
+	void SetColor(sf::Color color);
+	virtual void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
+	virtual void OnCollision(Collider& other) override;
+
+private:
+	std::unique_ptr<sf::Shape> m_shape;
+	bool m_is_colliding;
+};

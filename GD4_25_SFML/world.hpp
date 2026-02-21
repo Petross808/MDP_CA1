@@ -10,6 +10,7 @@
 #include "scene_node.hpp"
 #include "command_queue.hpp"
 #include "sound_player.hpp"
+#include "physics.hpp"
 
 class World
 {
@@ -37,5 +38,6 @@ private:
 	SceneNode m_scene_graph;
 	sf::FloatRect m_world_bounds;
 	CommandQueue m_command_queue;
+	Physics m_physics;
 };
 
