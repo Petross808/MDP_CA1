@@ -12,7 +12,8 @@
 
 Paddle::Paddle(Physics* physics) :
 	m_move_vector(),
-	m_physics_body(this, physics, 50.f, 1000, 2.f, 0.1f)
+	m_physics_body(this, physics, 50.f, 1000, 2.f, 0.1f),
+	m_pickup_id(PickupID::kNone)
 {
 	std::vector<sf::Vector2f> polygon;
 	switch (3)
@@ -62,6 +63,23 @@ void Paddle::ApplyMove(float x, float y)
 {
 	m_move_vector.x += x;
 	m_move_vector.y += y;
+}
+
+void Paddle::UsePickup()
+{
+	//TODO pickup behaviour implementation
+	switch (m_pickup_id)
+	{
+		case PickupID::kNone:
+			break;
+		case PickupID::kSpeedBoost:
+			m_move_vector.x += 5000;
+			m_move_vector.y += 5000;
+			break;
+		default:
+			throw std::invalid_argument("error while trying to use pickups");
+			break;
+	}
 }
 
 void Paddle::UpdateCurrent(sf::Time dt, CommandQueue& commands)

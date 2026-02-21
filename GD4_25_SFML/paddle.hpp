@@ -6,12 +6,14 @@
 #include "pawn.hpp"
 #include "physics.hpp"
 #include "physics_body.hpp"
+#include "e_pickup_id.hpp"
 
 class Paddle : public Pawn
 {
 public:
 	Paddle(Physics* physics);
 	void ApplyMove(float x, float y) override;
+	void UsePickup() override;
 
 private:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
@@ -21,5 +23,6 @@ private:
 private:
 	sf::Vector2f m_move_vector;
 	PhysicsBody m_physics_body;
+	PickupID m_pickup_id;
 };
 
