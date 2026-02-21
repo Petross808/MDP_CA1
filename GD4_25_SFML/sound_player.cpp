@@ -22,7 +22,7 @@ namespace
 
 SoundPlayer::SoundPlayer()
 {
-	m_sound_buffers.Load(SoundID::kButton, "Media/Sound/Button.wav");
+	m_sound_buffers.Load(SoundID::kButton, "Media/Sound/button_click.wav");
 
 	// Listener points towards the screen (default in SFML)
 	sf::Listener::setDirection({ 0.f, 0.f, -1.f });
