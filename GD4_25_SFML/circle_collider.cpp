@@ -32,13 +32,33 @@ bool CircleCollider::CollideWith(BoxCollider* other)
 	sf::Vector2f boxMax(boxMin + other->GetBoxSize());
 	sf::Vector2f closest(std::clamp(center.x, boxMin.x, boxMax.x), std::clamp(center.y, boxMin.y, boxMax.y));
 
-	return Utility::SqrLength(center - closest) < m_radius * m_radius;
+	sf::Vector2f offset(closest - center);
+	float depth = m_radius - Utility::Length(offset);
+
+	if (depth > 0)
+	{
+		sf::Vector2f normal(offset.normalized());
+		ResolveCollision(other, normal, depth);
+		return true;
+	}
+
+	return false;
 }
 
 bool CircleCollider::CollideWith(CircleCollider* other)
 {
 	float combinedRadius = m_radius + other->m_radius;
-	return Utility::SqrLength(GetCenter() - other->GetCenter()) <= combinedRadius * combinedRadius;
+
+	sf::Vector2f offset(GetCenter() - other->GetCenter());
+	float depth = combinedRadius - Utility::Length(offset);
+
+	if (depth > 0)
+	{
+		sf::Vector2f normal(-offset.normalized());
+		ResolveCollision(other, normal, depth);
+		return true;
+	}
+	return false;
 }
 
 bool CircleCollider::CollideWith(PolygonCollider* other)

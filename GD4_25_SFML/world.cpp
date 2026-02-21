@@ -32,10 +32,10 @@ void World::Update(sf::Time dt)
 		m_scene_graph.OnCommand(m_command_queue.Pop(), dt);
 	}
 	
-	HandleCollisions();
 	m_scene_graph.RemoveWrecks();
-
 	m_scene_graph.Update(dt, m_command_queue);
+
+	HandleCollisions();
 }
 
 void World::Draw()
@@ -62,7 +62,6 @@ void World::BuildScene()
 	m_scene_graph.AttachChild(std::move(paddle));
 
 	float wall_width = 20;
-
 	std::unique_ptr<Wall> wall1(new Wall(0, 0, m_world_bounds.size.x, wall_width, &m_physics));
 	std::unique_ptr<Wall> wall2(new Wall(0, m_world_bounds.size.y - wall_width, m_world_bounds.size.x, wall_width, &m_physics));
 	std::unique_ptr<Wall> wall3(new Wall(0, 0, wall_width, m_world_bounds.size.y, &m_physics));

@@ -29,6 +29,33 @@ bool BoxCollider::CollideWith(Collider* other)
 
 bool BoxCollider::CollideWith(BoxCollider* other)
 {
+	sf::Vector2f min(GetWorldPosition());
+	sf::Vector2 max(min + m_box_size);
+
+	sf::Vector2 otherMin(other->GetWorldPosition());
+	sf::Vector2 otherMax(otherMin + other->m_box_size);
+
+	float minX = std::min(std::abs(max.x - otherMin.x), std::abs(otherMax.x - min.x));
+	float minY = std::min(std::abs(max.y - otherMin.y), std::abs(otherMax.y - min.y));
+
+	sf::Vector2f normal;
+	float depth;
+
+	if (minX < minY)
+	{
+		normal = { otherMin.x - min.x, 0 };
+		depth = minX;
+	}
+	else
+	{
+		normal = { 0, otherMin.y - min.y };
+		depth = minY;
+	};
+
+	normal = normal.normalized();
+
+	ResolveCollision(other, normal, depth);
+
 	return true;
 }
 

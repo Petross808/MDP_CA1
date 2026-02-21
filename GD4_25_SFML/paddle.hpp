@@ -13,7 +13,11 @@ public:
 	void ApplyMove(float x, float y) override;
 
 private:
+	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
 	virtual void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual void OnCollision(Collider& other) override;
+
+private:
+	sf::Vector2f m_move_vector;
 };
 

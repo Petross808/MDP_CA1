@@ -9,18 +9,35 @@
 #include "shape_node.hpp"
 
 
-Paddle::Paddle(Physics* physics)
+Paddle::Paddle(Physics* physics) : m_move_vector()
 {
-	//std::vector<sf::Vector2f> polygon{ {-30, 0},{30, 0},{0, 60} };
+	std::vector<sf::Vector2f> polygon;
+	switch (3)
+	{
+	case 1:
+		polygon = {
+			{ 0.0000f, 0.0000f },
+			{ 0.0000f, -1.0000f },
+			{ 1.0000f, -1.0000f },
+			{ 1.0000f, 0.0000f }
+		};
+		break;
+	case 2:
+		polygon = { {-1, 0},{1, 0},{0, 2} };
+		break;
+	case 3:
+		polygon = {
+			{ 0.0000f, -1.0000f },
+			{ 0.9511f, -0.3090f },
+			{ 0.5878f, 0.8090f },
+			{ -0.5878f, 0.8090f },
+			{ -0.9511f, -0.3090f }
+		};
+		break;
+	default:
+		break;
+	}
 	
-	std::vector<sf::Vector2f> polygon{
-		{0.0000f, -1.0000f },
-		{0.9511f, -0.3090f},
-		{ 0.5878f,  0.8090f },
-		{ -0.5878f,  0.8090f },
-		{ -0.9511f, -0.3090f }
-	};
-
 	for (auto& vert : polygon)
 	{
 		vert *= 40.f;
@@ -37,7 +54,17 @@ Paddle::Paddle(Physics* physics)
 
 void Paddle::ApplyMove(float x, float y)
 {
-	move(sf::Vector2f(x*3, y*3));
+	m_move_vector.x += x;
+	m_move_vector.y += y;
+}
+
+void Paddle::UpdateCurrent(sf::Time dt, CommandQueue& commands)
+{
+	if (m_move_vector != sf::Vector2f())
+	{
+		move(m_move_vector.normalized() * 3.f);
+		m_move_vector = { 0, 0 };
+	}
 }
 
 void Paddle::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
