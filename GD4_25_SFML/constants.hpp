@@ -9,7 +9,8 @@ constexpr auto kWindowTitle = "Game";
 constexpr auto kWindowWidth = 1600;
 constexpr auto kWindowHeight = 900;
 
-constexpr auto actionCount = 5;
+constexpr auto kLocalPlayerCount = 2;
+constexpr auto kActionCount = 5;
 
 constexpr auto kPlayerSpeed = 100.f;
 constexpr auto kTimePerFrame = 1.f / 60.f;

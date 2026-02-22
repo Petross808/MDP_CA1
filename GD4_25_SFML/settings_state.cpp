@@ -13,16 +13,23 @@ SettingsState::SettingsState(StateStack& stack)
     , m_background_sprite(GetContext().textures->Get(TextureID::kTitleScreen))
 {
     StateStack::Context context = GetContext();
-    Action* actionArray = context.player->GetActionArray();
 
-    float yOffset = 0;
-    for (int x = 0; x < actionCount; x++)
+    float xOffset = 0;
+    for (auto& player : *context.players)
     {
-        Action* a = &actionArray[x];
-        m_buttonLabel_vector.emplace_back(ButtonLabel(a, 150 + yOffset, context, m_gui_container));
-        yOffset += 50;
+        Action* actionArray = player.GetActionArray();
+
+        float yOffset = 0;
+        for (int x = 0; x < kActionCount; x++)
+        {
+            Action* a = &actionArray[x];
+            m_buttonLabel_vector.emplace_back(ButtonLabel(a, 80 + xOffset, 150 + yOffset, context, m_gui_container));
+            yOffset += 50;
+        }
+        m_buttonLabel_vector.shrink_to_fit();
+
+        xOffset += 300;
     }
-    m_buttonLabel_vector.shrink_to_fit();
 
 	auto back_button = std::make_shared<gui::Button>(GetContext());
     back_button->setPosition(sf::Vector2f(80.f, 475.f));
@@ -70,16 +77,16 @@ bool SettingsState::HandleEvent(const sf::Event& event)
     return false;
 }
 
-SettingsState::ButtonLabel::ButtonLabel(Action* action, float y, StateStack::Context& context, gui::Container& container) :
+SettingsState::ButtonLabel::ButtonLabel(Action* action, float x, float y, StateStack::Context& context, gui::Container& container) :
     m_action(action),
     m_button(std::make_shared<gui::Button>(context)),
     m_label(std::make_shared<gui::Label>("", *context.fonts))
 {
-    m_button->setPosition(sf::Vector2f(80.f, y));
+    m_button->setPosition(sf::Vector2f(x, y));
     m_button->SetText(action->GetName());
     m_button->SetToggle(true);
 
-    m_label->setPosition(sf::Vector2f(300.f, y + 15.f));
+    m_label->setPosition(sf::Vector2f(220.f + x, y + 15.f));
     m_label->SetText(Utility::toString(action->GetKeyBind()));
 
     container.Pack(m_button);

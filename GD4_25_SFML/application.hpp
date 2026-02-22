@@ -29,7 +29,7 @@ private:
 
 private:
 	sf::RenderWindow m_window;
-	PlayerController m_player;
+	PlayerController::Array m_players;
 
 	TextureHolder m_textures;
 	FontHolder m_fonts;

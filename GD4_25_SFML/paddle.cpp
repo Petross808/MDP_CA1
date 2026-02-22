@@ -11,7 +11,8 @@
 #include "utility.hpp"
 
 
-Paddle::Paddle(float x, float y, Physics* physics, SoundPlayer& sounds) :
+Paddle::Paddle(int playerId, float x, float y, Physics* physics, SoundPlayer& sounds) :
+	Pawn(playerId),
 	m_move_vector(),
 	m_physics_body(this, physics, 10000.f, 1500, 2.f, 0.1f, 1.f),
 	m_sounds(sounds),
