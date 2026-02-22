@@ -13,5 +13,6 @@ enum class TextureID
 	kStoneWhite,
 	kStoneGrey,
 	kStoneBlack,
+	kFire,
 	kTextureCount,
 };

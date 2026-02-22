@@ -51,7 +51,8 @@ void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* text
 	std::unique_ptr<Paddle> paddle_two(new Paddle(1, world_bounds.size.x - 200, center.y, physics, sounds));
 	dynamic->AttachChild(std::move(paddle_two));
 
-	std::unique_ptr<PickupSpawner> pickupSpawner(new PickupSpawner(center.x, center.y + 50, physics, 5));
+
+	std::unique_ptr<PickupSpawner> pickupSpawner(new PickupSpawner(450, 20, 640, 800, physics, texture_holder, 5));
 	dynamic->AttachChild(std::move(pickupSpawner));
 
 

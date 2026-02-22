@@ -59,11 +59,13 @@ void World::LoadTextures()
 	m_textures.Load(TextureID::kStoneWhite, "Media/Textures/t_flat_stone_white.png");
 	m_textures.Load(TextureID::kStoneGrey, "Media/Textures/t_flat_stone_grey.png");
 	m_textures.Load(TextureID::kStoneBlack, "Media/Textures/t_flat_stone_black.png");
+	m_textures.Load(TextureID::kFire, "Media/Textures/t_paddle_fire.png");
 	m_textures.Get(TextureID::kWallGrey).setRepeated(true);
 	m_textures.Get(TextureID::kWallRed).setRepeated(true);
 	m_textures.Get(TextureID::kStoneWhite).setRepeated(true);
 	m_textures.Get(TextureID::kStoneGrey).setRepeated(true);
 	m_textures.Get(TextureID::kStoneBlack).setRepeated(true);
+	m_textures.Get(TextureID::kFire).setRepeated(true);
 
 	
 }

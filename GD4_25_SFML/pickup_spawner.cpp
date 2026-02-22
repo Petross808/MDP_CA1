@@ -4,10 +4,13 @@
 
 #include "pickup_spawner.hpp"
 #include "pickup.hpp"
+#include "utility.hpp"
 
-PickupSpawner::PickupSpawner(float x, float y, Physics* physics_ptr, float spawn_time) :
+PickupSpawner::PickupSpawner(float x, float y, int width, int height, Physics* physics_ptr, TextureHolder* texture_holder, float spawn_time) :
+	m_width(width),
+	m_height(height),
 	m_physics_ptr(physics_ptr),
-	m_has_pickup(false),
+	m_texture_holder(texture_holder),
 	m_spawn_time(spawn_time),
 	m_cooldown(spawn_time)
 {
@@ -19,18 +22,17 @@ PickupSpawner::~PickupSpawner() = default;
 
 void PickupSpawner::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
-	if (m_has_pickup)
-	{
-		return;
-	}
-	else if(m_cooldown > 0)
+	if(m_cooldown > 0)
 	{
 		m_cooldown -= dt.asSeconds();
 		return;
 	}
 	else
 	{
-		std::unique_ptr<Pickup> pickupTest(new Pickup(0, 0, 50, m_physics_ptr, PickupID::kSpeedBoost));
+		float x = static_cast<float>(Utility::RandomInt(m_width));
+		float y = static_cast<float>(Utility::RandomInt(m_height));
+		sf::Texture* fire = &m_texture_holder->Get(TextureID::kFire);
+		std::unique_ptr<Pickup> pickupTest(new Pickup(x, y, 30, m_physics_ptr, PickupID::kSpeedBoost, fire));
 		this->AttachChild(std::move(pickupTest));
 		m_cooldown = m_spawn_time;
 		return;
