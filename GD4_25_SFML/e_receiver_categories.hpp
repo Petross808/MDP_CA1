@@ -9,5 +9,6 @@ enum class ReceiverCategories
 	kNone = 0,
 	kScene = 1 << 0,
 	kPlayer = 1 << 1,
-	kSoundNode = 1 << 2,
+	kBall = 1 << 2,
+	kSoundNode = 1 << 3,
 };

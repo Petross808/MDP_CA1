@@ -6,6 +6,7 @@
 #include "paddle.hpp"
 #include "wall.hpp"
 #include "ball.hpp"
+#include "pickup.hpp"
 #include "shape_node.hpp"
 #include "player_barrier.hpp"
 #include "goal.hpp"

@@ -1,14 +1,15 @@
 /*
 * Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
 */
 
 #include "ball.hpp"
 #include "shape_node.hpp"
-#include "box_collider.hpp"
 #include "circle_collider.hpp"
-#include "polygon_collider.hpp"
 
-Ball::Ball(float x, float y, float radius, Physics* physics):
+Ball::Ball(float x, float y, float radius, Physics* physics) :
+	m_last_collided(),
+	SceneNode(ReceiverCategories::kBall),
 	m_physics_body(this, physics, 1, 1000, 0, 1.1f),
 	m_start_delay(3)
 {
@@ -22,6 +23,23 @@ Ball::Ball(float x, float y, float radius, Physics* physics):
 }
 
 Ball::~Ball() = default;
+
+void Ball::OnCollision(Collider& other)
+{
+	Paddle* paddle = dynamic_cast<Paddle*>(other.GetParent());
+	if (paddle != nullptr)
+	{
+		m_last_collided = paddle;
+	}
+}
+
+void Ball::GivePickup(PickupID pickup_id)
+{
+	if (m_last_collided != nullptr)
+	{
+		m_last_collided->SetPickup(pickup_id);
+  }
+}
 
 void Ball::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
