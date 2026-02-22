@@ -6,22 +6,31 @@
 #include "player_controller.hpp"
 #include "pawn.hpp"
 
-PlayerController::PlayerController(ReceiverCategories pawn_category) :
+PlayerController::PlayerController(ReceiverCategories pawn_category, int player_id) :
+    m_id(player_id),
     m_pawn_category(pawn_category),
     m_action_array
     {
-        Action("Move Up", true, sf::Keyboard::Scancode::W,
-            Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.ApplyMove(0, -1); }), m_pawn_category)),
-        Action("Move Down", true, sf::Keyboard::Scancode::S,
-            Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.ApplyMove(0, 1); }), m_pawn_category)),
-        Action("Move Left", true, sf::Keyboard::Scancode::A,
-            Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.ApplyMove(-1, 0); }), m_pawn_category)),
-        Action("Move Right", true, sf::Keyboard::Scancode::D,
-            Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.ApplyMove(1, 0); }), m_pawn_category)),
-        Action("Use Pickup", false, sf::Keyboard::Scancode::Space,
-            Command(DerivedAction<Pawn>([](Pawn& p, sf::Time dt) { p.UsePickup(); }), m_pawn_category))
+        Action("Move Up", true, Key::W,
+            Command(DerivedAction<Pawn>([this](Pawn& p, sf::Time dt) { if (p.IsID(m_id)) p.ApplyMove(0, -1); }), m_pawn_category)),
+        Action("Move Down", true, Key::S,
+            Command(DerivedAction<Pawn>([this](Pawn& p, sf::Time dt) { if (p.IsID(m_id)) p.ApplyMove(0, 1); }), m_pawn_category)),
+        Action("Move Left", true, Key::A,
+            Command(DerivedAction<Pawn>([this](Pawn& p, sf::Time dt) { if (p.IsID(m_id)) p.ApplyMove(-1, 0); }), m_pawn_category)),
+        Action("Move Right", true, Key::D,
+            Command(DerivedAction<Pawn>([this](Pawn& p, sf::Time dt) { if (p.IsID(m_id)) p.ApplyMove(1, 0); }), m_pawn_category)),
+        Action("Use Pickup", false, Key::Space,
+            Command(DerivedAction<Pawn>([this](Pawn& p, sf::Time dt) { if (p.IsID(m_id)) p.UsePickup(); }), m_pawn_category))
     }
 {
+    if (player_id == 1)
+    {
+        m_action_array[0].ChangeKeybind(Key::Up);
+        m_action_array[1].ChangeKeybind(Key::Down);
+        m_action_array[2].ChangeKeybind(Key::Left);
+        m_action_array[3].ChangeKeybind(Key::Right);
+        m_action_array[4].ChangeKeybind(Key::Enter);
+    }
 }
 
 void PlayerController::HandleEvent(const sf::Event& event, CommandQueue& command_queue)

@@ -21,7 +21,7 @@ public:
 		gui::Label::Ptr m_label;
 
 	public:
-		ButtonLabel(Action* action, float y, StateStack::Context& context, gui::Container& container);
+		ButtonLabel(Action* action, float x, float y, StateStack::Context& context, gui::Container& container);
 	};
 
 public:

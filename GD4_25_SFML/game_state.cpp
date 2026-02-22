@@ -6,7 +6,10 @@
 #include "game_state.hpp"
 #include "pause_state.hpp"
 
-GameState::GameState(StateStack& stack) : State(stack), m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound), m_player(*GetContext().player)
+GameState::GameState(StateStack& stack) :
+	State(stack),
+	m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound),
+	m_players(*GetContext().players)
 {
 	GetContext().music->Play(MusicID::kGameMusic);
 }
@@ -23,14 +26,23 @@ bool GameState::Update(sf::Time dt)
 	// TODO: Add end conditions and switch states
 
 	CommandQueue& commands = m_world.GetCommandQueue();
-	m_player.HandleRealTimeInput(commands);
+
+	for (auto& player : m_players)
+	{
+		player.HandleRealTimeInput(commands);
+	}
+
 	return true;
 }
 
 bool GameState::HandleEvent(const sf::Event& event)
 {
 	CommandQueue& commands = m_world.GetCommandQueue();
-	m_player.HandleEvent(event, commands);
+
+	for (auto& player : m_players)
+	{
+		player.HandleEvent(event, commands);
+	}
 
 	//Escape should bring up the pause menu
 	const auto* keypress = event.getIf<sf::Event::KeyPressed>();

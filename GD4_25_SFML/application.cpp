@@ -12,8 +12,12 @@
 
 Application::Application() : 
 	m_window(sf::VideoMode({ kWindowWidth, kWindowHeight }), kWindowTitle, sf::Style::Close), 
-	m_player(ReceiverCategories::kPlayer),
-	m_stack(StateStack::Context(m_window, m_textures, m_fonts, m_player, m_music, m_sound))
+	m_players
+	{
+		PlayerController(ReceiverCategories::kPlayer, 0),
+		PlayerController(ReceiverCategories::kPlayer, 1)
+	},
+	m_stack(StateStack::Context(m_window, m_textures, m_fonts, m_players, m_music, m_sound))
 {
 	m_window.setKeyRepeatEnabled(false);
 
