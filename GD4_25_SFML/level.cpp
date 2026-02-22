@@ -6,7 +6,7 @@
 #include "paddle.hpp"
 #include "wall.hpp"
 #include "ball.hpp"
-#include "pickup.hpp"
+#include "pickup_spawner.hpp"
 #include "shape_node.hpp"
 #include "player_barrier.hpp"
 #include "goal.hpp"
@@ -51,8 +51,10 @@ void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* text
 	std::unique_ptr<Paddle> paddle_two(new Paddle(1, world_bounds.size.x - 200, center.y, physics, sounds));
 	dynamic->AttachChild(std::move(paddle_two));
 
-	std::unique_ptr<Pickup> pickupTest(new Pickup(world_bounds.size.x - 200, center.y, 50, physics, PickupID::kSpeedBoost));
-	dynamic->AttachChild(std::move(pickupTest));
+
+	std::unique_ptr<PickupSpawner> pickupSpawner(new PickupSpawner(450, 20, 640, 800, physics, texture_holder, 5));
+	dynamic->AttachChild(std::move(pickupSpawner));
+
 
 	std::unique_ptr<ShapeNode> player_one_zone(new ShapeNode(400, world_bounds.size.y));
 	player_one_zone->setPosition({0,0});
