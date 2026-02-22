@@ -17,6 +17,6 @@ public:
 
 private:
 	World m_world;
-	PlayerController& m_player;
+	PlayerController::Array& m_players;
 };
 

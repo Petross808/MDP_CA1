@@ -44,10 +44,10 @@ void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* text
 	std::unique_ptr<Ball> ball(new Ball(center.x - 20, center.y - 20, 20, physics, stoneWhite));
 	dynamic->AttachChild(std::move(ball));
 
-	std::unique_ptr<Paddle> paddle_one(new Paddle(200, center.y, physics));
+	std::unique_ptr<Paddle> paddle_one(new Paddle(0, 200, center.y, physics));
 	dynamic->AttachChild(std::move(paddle_one));
 
-	std::unique_ptr<Paddle> paddle_two(new Paddle(world_bounds.size.x - 200, center.y, physics));
+	std::unique_ptr<Paddle> paddle_two(new Paddle(1, world_bounds.size.x - 200, center.y, physics));
 	dynamic->AttachChild(std::move(paddle_two));
 
 

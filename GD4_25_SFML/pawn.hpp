@@ -8,7 +8,13 @@
 class Pawn : public SceneNode
 {
 public:
-	Pawn();
+	Pawn(int id);
+	int GetID() const;
+	bool IsID(int id) const;
+	
 	virtual void ApplyMove(float x, float y) = 0;
 	virtual void UsePickup() = 0;
+
+private:
+	int m_player_id;
 };

@@ -15,8 +15,13 @@
 
 class PlayerController
 {
+private:
+	typedef sf::Keyboard::Scancode Key;
 public:
-	PlayerController(ReceiverCategories category);
+	typedef std::array<PlayerController, kLocalPlayerCount> Array;
+
+public:
+	PlayerController(ReceiverCategories category, int player_id);
 	void HandleEvent(const sf::Event& event, CommandQueue& command_queue);
 	void HandleRealTimeInput(CommandQueue& command_queue);
 	Action* GetActionArray();
@@ -24,6 +29,7 @@ public:
 
 private:
 	ReceiverCategories m_pawn_category;
-	Action m_action_array[actionCount];
+	Action m_action_array[kActionCount];
+	int m_id;
 };
 
