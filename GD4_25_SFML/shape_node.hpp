@@ -25,11 +25,7 @@ public:
 	void SetTexture(sf::Texture &texture); //Jakub Polacek - GD4b - D00260171
 	virtual void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
-	virtual void OnCollision(Collider& other) override;
-
 private:
 	std::unique_ptr<sf::Shape> m_shape;
 	sf::FloatRect m_text_rect;
-	bool m_is_colliding;
 };

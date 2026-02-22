@@ -17,9 +17,13 @@ public:
 	virtual void OnCollision(Collider& other) override;
 	void GivePickup(PickupID pickup_id);
 
+protected:
+	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
+
 private:
 	PhysicsBody m_physics_body;
 	Paddle* m_last_collided;
+	float m_start_delay;
 };
 
 

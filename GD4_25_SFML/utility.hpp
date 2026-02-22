@@ -23,5 +23,6 @@ public:
 	static float SqrLength(sf::Vector2f vector);
 	static float DotProduct(sf::Vector2f first, sf::Vector2f second);
 	static sf::Vector2f Abs(sf::Vector2f vector);
+	static sf::FloatRect GetPolygonBound(std::vector<sf::Vector2f> vertices);
 };
 

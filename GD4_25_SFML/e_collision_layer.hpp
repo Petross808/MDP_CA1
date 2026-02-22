@@ -11,4 +11,5 @@ enum CollisionLayer
 	kWall = 1 << 3,
 	kPlayerBarrier = 1 << 4,
 	kPickup = 1 << 5,
+	kGoal = 1 << 6,
 };
