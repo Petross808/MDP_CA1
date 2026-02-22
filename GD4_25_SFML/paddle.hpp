@@ -6,12 +6,13 @@
 #include "pawn.hpp"
 #include "physics.hpp"
 #include "physics_body.hpp"
+#include "sound_player.hpp"
 #include "e_pickup_id.hpp"
 
 class Paddle : public Pawn
 {
 public:
-	Paddle(int playerId, float x, float y, Physics* physics);
+	Paddle(int playerId, float x, float y, Physics* physics, SoundPlayer & sounds);
 	void ApplyMove(float x, float y) override;
 	void SetPickup(PickupID pickup_id); // Jakub Polacek - GD4b - D00260171
 	void UsePickup() override; // Jakub Polacek - GD4b - D00260171
@@ -24,6 +25,7 @@ private:
 private:
 	sf::Vector2f m_move_vector;
 	PhysicsBody m_physics_body;
+	SoundPlayer& m_sounds;
 	PickupID m_pickup_id;
 };
 

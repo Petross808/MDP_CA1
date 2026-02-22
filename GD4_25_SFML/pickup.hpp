@@ -18,4 +18,5 @@ public:
 private:
 	PickupID m_pickup_id;
 	bool m_is_destroyed;
+	Command m_pickup_collect;
 };

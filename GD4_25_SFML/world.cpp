@@ -73,7 +73,7 @@ void World::BuildScene()
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
 	m_scene_graph.AttachChild(std::move(soundNode));
 
-	Level::CreateClassic(&m_scene_graph, &m_physics, &m_textures, m_world_bounds);
+	Level::CreateClassic(&m_scene_graph, &m_physics, &m_textures, m_world_bounds, m_sounds);
 
 	
 }
