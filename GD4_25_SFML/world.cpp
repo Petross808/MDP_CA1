@@ -26,6 +26,9 @@ void World::Update(sf::Time dt)
 {
 	UpdateSounds();
 
+	m_physics.SimulateAllBodies(dt);
+	HandleCollisions();
+
 	//Process commands from the scenegraph
 	while (!m_command_queue.IsEmpty())
 	{
@@ -35,8 +38,7 @@ void World::Update(sf::Time dt)
 	m_scene_graph.RemoveWrecks();
 	m_scene_graph.Update(dt, m_command_queue);
 
-	m_physics.SimulateAllBodies(dt);
-	HandleCollisions();
+
 }
 
 void World::Draw()
@@ -53,7 +55,15 @@ CommandQueue& World::GetCommandQueue()
 void World::LoadTextures()
 {
 	m_textures.Load(TextureID::kWallGrey, "Media/Textures/t_wall_grey.png");
+	m_textures.Load(TextureID::kWallRed, "Media/Textures/t_wall_red.png");
+	m_textures.Load(TextureID::kStoneWhite, "Media/Textures/t_flat_stone_white.png");
+	m_textures.Load(TextureID::kStoneGrey, "Media/Textures/t_flat_stone_grey.png");
+	m_textures.Load(TextureID::kStoneBlack, "Media/Textures/t_flat_stone_black.png");
 	m_textures.Get(TextureID::kWallGrey).setRepeated(true);
+	m_textures.Get(TextureID::kWallRed).setRepeated(true);
+	m_textures.Get(TextureID::kStoneWhite).setRepeated(true);
+	m_textures.Get(TextureID::kStoneGrey).setRepeated(true);
+	m_textures.Get(TextureID::kStoneBlack).setRepeated(true);
 
 	
 }
@@ -80,8 +90,8 @@ void World::HandleCollisions()
 
 	for (auto& collision : results)
 	{
-		collision.first->EvaluateCollision(*collision.second);
-		collision.second->EvaluateCollision(*collision.first);
+		collision.first->EvaluateCollision(*collision.second, m_command_queue);
+		collision.second->EvaluateCollision(*collision.first, m_command_queue);
 	}
 }
 

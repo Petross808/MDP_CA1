@@ -69,7 +69,7 @@ void SceneNode::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
 }
 
-void SceneNode::OnCollision(Collider& other)
+void SceneNode::OnCollision(Collider& other, CommandQueue& command_queue)
 {
 }
 
@@ -124,15 +124,15 @@ void SceneNode::RemoveWrecks()
 	std::for_each(m_children.begin(), m_children.end(), std::mem_fn(&SceneNode::RemoveWrecks));
 }
 
-void SceneNode::EvaluateCollision(Collider& other)
+void SceneNode::EvaluateCollision(Collider& other, CommandQueue& command_queue)
 {
-	OnCollision(other);
+	OnCollision(other, command_queue);
 	if(m_parent != nullptr)
 	{
-		m_parent->OnCollision(other);
+		m_parent->OnCollision(other, command_queue);
 		for (auto& child : m_parent->m_children)
 		{
-			child->OnCollision(other);
+			child->OnCollision(other, command_queue);
 		}
 	}
 }

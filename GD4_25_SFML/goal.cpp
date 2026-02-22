@@ -17,7 +17,7 @@ Goal::Goal(float x, float y, float width, float height, Physics* physics)
 
 Goal::~Goal() = default;
 
-void Goal::OnCollision(Collider& other)
+void Goal::OnCollision(Collider& other, CommandQueue& command_queue)
 {
 	//TODO end the game
 }

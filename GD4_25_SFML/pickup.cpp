@@ -25,7 +25,7 @@ Pickup::Pickup(float x, float y, float radius, Physics* physics, PickupID pickup
 	AttachChild(std::move(shape));
 }
 
-void Pickup::OnCollision(Collider& other)
+void Pickup::OnCollision(Collider& other, CommandQueue& command_queue)
 {
 	Ball* ball = dynamic_cast<Ball*>(other.GetParent());
 	if (ball != nullptr)

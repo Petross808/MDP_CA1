@@ -10,7 +10,7 @@
 class Level
 {
 public:
-	static void CreateBounds(SceneNode* root, Physics* physics, sf::FloatRect world_bounds, float wall_width);
+	static void CreateBounds(SceneNode* root, Physics* physics, sf::FloatRect world_bounds, float wall_width, sf::Texture* texture);
 
 	static void CreateClassic(SceneNode* root, Physics* physics, TextureHolder* texture_holder, sf::FloatRect world_bounds);
 
