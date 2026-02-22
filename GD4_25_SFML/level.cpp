@@ -6,6 +6,7 @@
 #include "paddle.hpp"
 #include "wall.hpp"
 #include "ball.hpp"
+#include "pickup.hpp"
 
 void Level::CreateBounds(SceneNode* root, Physics* physics, sf::FloatRect world_bounds, float wall_width)
 {
@@ -38,12 +39,14 @@ void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* text
 	background->AttachChild(std::move(triWall));
 
 
+	root->AttachChild(std::move(background));
+
+	std::unique_ptr<Pickup> speedUp(new Pickup(1000, 500, 100, physics, PickupID::kSpeedBoost));
+	root->AttachChild(std::move(speedUp));
+
+
 	std::unique_ptr<Ball> ball(new Ball(400, 300, 20, physics));
 	root->AttachChild(std::move(ball));
-
-
-
-	root->AttachChild(std::move(background));
 
 	std::unique_ptr<Paddle> paddle(new Paddle(physics));
 	root->AttachChild(std::move(paddle));

@@ -65,17 +65,26 @@ void Paddle::ApplyMove(float x, float y)
 	m_move_vector.y += y;
 }
 
+// Jakub Polacek - GD4b - D00260171
+void Paddle::SetPickup(PickupID pickup_id)
+{
+	m_pickup_id = pickup_id;
+}
+
+// Jakub Polacek - GD4b - D00260171
 void Paddle::UsePickup()
 {
-	//TODO pickup behaviour implementation
 	switch (m_pickup_id)
 	{
 		case PickupID::kNone:
 			break;
 		case PickupID::kSpeedBoost:
-			m_move_vector.x += 5000;
-			m_move_vector.y += 5000;
+		{
+			sf::Vector2f boost = (m_move_vector.normalized() * 30000.f);
+			m_physics_body.AddForce(boost.x, boost.y);
+			m_pickup_id = PickupID::kNone;
 			break;
+		}
 		default:
 			throw std::invalid_argument("error while trying to use pickups");
 			break;

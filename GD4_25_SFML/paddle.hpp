@@ -13,7 +13,8 @@ class Paddle : public Pawn
 public:
 	Paddle(Physics* physics);
 	void ApplyMove(float x, float y) override;
-	void UsePickup() override;
+	void SetPickup(PickupID pickup_id); // Jakub Polacek - GD4b - D00260171
+	void UsePickup() override; // Jakub Polacek - GD4b - D00260171
 
 private:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
