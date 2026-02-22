@@ -8,5 +8,6 @@ enum class TextureID
 {
 	kButton,
 	kTitleScreen,
-	kTextureCount
+	kWallGrey,
+	kTextureCount,
 };

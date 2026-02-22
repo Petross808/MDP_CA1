@@ -1,7 +1,14 @@
+/*
+* Petr Sulc - GD4b - D00261476
+*/
+
+#pragma once
 enum CollisionLayer
 {
 	kDefault = 1 << 0,
-	kWall = 1 << 1,
-	kPlayer = 1 << 2,
-	kBall = 1 << 3,
+	kPlayer = 1 << 1,
+	kBall = 1 << 2,
+	kWall = 1 << 3,
+	kPlayerBarrier = 1 << 4,
+	kGoal = 1 << 5,
 };

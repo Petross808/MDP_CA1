@@ -90,3 +90,20 @@ sf::Vector2f Utility::Abs(sf::Vector2f vector)
 {
     return { std::abs(vector.x), std::abs(vector.y) };
 }
+
+sf::FloatRect Utility::GetPolygonBound(std::vector<sf::Vector2f> vertices)
+{
+    sf::Vector2f min(vertices[0]);
+    sf::Vector2f max(vertices[0]);
+
+
+    for (auto& vertex : vertices)
+    {
+        min.x = std::min(min.x, vertex.x);
+        min.y = std::min(min.y, vertex.y);
+        max.x = std::max(max.x, vertex.x);
+        max.y = std::max(max.y, vertex.y);
+    }
+
+    return { min, max - min };
+}
