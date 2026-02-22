@@ -6,11 +6,13 @@
 #include "ball.hpp"
 #include "shape_node.hpp"
 #include "circle_collider.hpp"
+#include "sound_node.hpp"
 
-Ball::Ball(float x, float y, float radius, Physics* physics) :
+Ball::Ball(float x, float y, float radius, Physics* physics, sf::Texture* texture) :
 	m_last_collided(),
 	SceneNode(ReceiverCategories::kBall),
 	m_physics_body(this, physics, 1, 1000, 0, 1.1f),
+	m_bounce_sound(DerivedAction<SoundNode>([this](SoundNode& s, sf::Time dt) { s.PlaySound(SoundID::kBounce, GetWorldPosition());}), ReceiverCategories::kSoundNode),
 	m_start_delay(3)
 {
 	setPosition(sf::Vector2f(x, y));
@@ -19,18 +21,23 @@ Ball::Ball(float x, float y, float radius, Physics* physics) :
 	AttachChild(std::move(collider));
 
 	std::unique_ptr<ShapeNode> shape(new ShapeNode(radius));
+	if (texture != nullptr)
+	{
+		shape->SetTexture(*texture);
+	}
 	AttachChild(std::move(shape));
 }
 
 Ball::~Ball() = default;
 
-void Ball::OnCollision(Collider& other)
+void Ball::OnCollision(Collider& other, CommandQueue& command_queue)
 {
 	Paddle* paddle = dynamic_cast<Paddle*>(other.GetParent());
 	if (paddle != nullptr)
 	{
 		m_last_collided = paddle;
 	}
+	command_queue.Push(m_bounce_sound);
 }
 
 void Ball::GivePickup(PickupID pickup_id)

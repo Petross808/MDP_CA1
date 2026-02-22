@@ -9,5 +9,9 @@ enum class TextureID
 	kButton,
 	kTitleScreen,
 	kWallGrey,
+	kWallRed,
+	kStoneWhite,
+	kStoneGrey,
+	kStoneBlack,
 	kTextureCount,
 };

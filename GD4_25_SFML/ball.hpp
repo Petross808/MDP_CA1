@@ -12,9 +12,9 @@
 class Ball : public SceneNode
 {
 public:
-	Ball(float x, float y, float radius, Physics* physics);
+	Ball(float x, float y, float radius, Physics* physics, sf::Texture* texture = nullptr);
 	~Ball();
-	virtual void OnCollision(Collider& other) override;
+	virtual void OnCollision(Collider& other, CommandQueue& command_queue) override;
 	void GivePickup(PickupID pickup_id);
 
 protected:
@@ -24,6 +24,7 @@ private:
 	PhysicsBody m_physics_body;
 	Paddle* m_last_collided;
 	float m_start_delay;
+	Command m_bounce_sound;
 };
 
 

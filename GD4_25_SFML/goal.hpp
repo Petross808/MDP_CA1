@@ -8,7 +8,7 @@ public:
 	Goal(float x, float y, float width, float height, Physics* physics);
 	~Goal();
 
-	virtual void OnCollision(Collider& other) override;
+	virtual void OnCollision(Collider& other, CommandQueue& command_queue) override;
 };
 
 

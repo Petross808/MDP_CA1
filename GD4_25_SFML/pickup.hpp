@@ -13,7 +13,7 @@ class Pickup : public SceneNode
 public:
 	Pickup(float x, float y, float radius, Physics* physics, PickupID pickup_id, sf::Texture* texture = nullptr);
 	~Pickup();
-	virtual void OnCollision(Collider& other) override;
+	virtual void OnCollision(Collider& other, CommandQueue& command_queue) override;
 	virtual bool IsDestroyed() const override;
 private:
 	PickupID m_pickup_id;

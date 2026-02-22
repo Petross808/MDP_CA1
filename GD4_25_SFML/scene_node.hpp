@@ -29,13 +29,13 @@ public:
 	void OnCommand(const Command& command, sf::Time dt);
 	unsigned int GetCategory() const;
 	void RemoveWrecks();
-	void EvaluateCollision(Collider& other);
+	void EvaluateCollision(Collider& other, CommandQueue& command_queue);
 	SceneNode* GetParent();
 	SceneNode* GetParent() const;
 
 protected:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands);
-	virtual void OnCollision(Collider& other);
+	virtual void OnCollision(Collider& other, CommandQueue& command_queue);
 
 private:
 	void UpdateChildren(sf::Time dt, CommandQueue& commands);

@@ -117,7 +117,7 @@ void Paddle::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) cons
 {
 }
 
-void Paddle::OnCollision(Collider& other)
+void Paddle::OnCollision(Collider& other, CommandQueue& command_queue)
 {
 }
 
