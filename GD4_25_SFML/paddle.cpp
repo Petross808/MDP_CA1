@@ -7,15 +7,15 @@
 #include "circle_collider.hpp"
 #include "polygon_collider.hpp"
 #include "shape_node.hpp"
-#include <iostream>
+#include "utility.hpp"
 
 
-Paddle::Paddle(Physics* physics) :
+Paddle::Paddle(float x, float y, Physics* physics) :
 	m_move_vector(),
-	m_physics_body(this, physics, 50.f, 1000, 2.f, 0.1f)
+	m_physics_body(this, physics, 10000.f, 1500, 2.f, 0.1f, 1.f)
 {
 	std::vector<sf::Vector2f> polygon;
-	switch (3)
+	switch (4)
 	{
 	case 1:
 		polygon = {
@@ -37,21 +37,31 @@ Paddle::Paddle(Physics* physics) :
 			{ -0.9511f, -0.3090f }
 		};
 		break;
+	case 4:
+		polygon = {
+			{ 0.0000f, 0.0000f },
+			{ 0.0000f, -3.0000f },
+			{ 1.0000f, -3.0000f },
+			{ 1.0000f, 0.0000f }
+		};
+		break;
 	default:
 		break;
 	}
 	
 	for (auto& vert : polygon)
 	{
-		vert *= 40.f;
+		vert *= 50.f;
 	}
 
-	setPosition(sf::Vector2f(150,150));
+	sf::Vector2f center = Utility::GetPolygonBound(polygon).getCenter();
+
+	setPosition(sf::Vector2f(x - center.x , y - center.y));
 	m_physics_body.SetAsKinematic();
 
 	std::unique_ptr<Collider> collider = std::make_unique<PolygonCollider>(0.f, 0.f, polygon, physics, &m_physics_body);
 	collider->SetLayer(CollisionLayer::kPlayer);
-	collider->SetIgnoreLayers(CollisionLayer::kWall | CollisionLayer::kPlayer);
+	collider->SetIgnoreLayers(CollisionLayer::kPlayer);
 	AttachChild(std::move(collider));
 
 	std::unique_ptr<ShapeNode> shape(new ShapeNode(polygon));
@@ -68,7 +78,7 @@ void Paddle::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
 	if (m_move_vector != sf::Vector2f())
 	{
-		sf::Vector2f force = m_move_vector.normalized() * 1000.f;
+		sf::Vector2f force = m_move_vector.normalized() * 1500.f;
 		m_physics_body.AddForce(force.x, force.y);
 		m_move_vector = { 0, 0 };
 	}

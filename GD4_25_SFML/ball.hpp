@@ -15,8 +15,12 @@ public:
 	Ball(float x, float y, std::vector<sf::Vector2f>& vertices, Physics* physics);
 	~Ball();
 
+protected:
+	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
+
 private:
 	PhysicsBody m_physics_body;
+	float m_start_delay;
 };
 
 

@@ -11,7 +11,7 @@ class Physics;
 class PhysicsBody
 {
 public:
-	PhysicsBody(SceneNode* controlled, Physics* physics, float mass, float maxSpeed, float drag, float elasticity);
+	PhysicsBody(SceneNode* controlled, Physics* physics, float mass, float maxSpeed, float drag, float elasticity, float grip = 0);
 	~PhysicsBody();
 
 	void AddForce(float x, float y);
@@ -22,6 +22,7 @@ public:
 	sf::Vector2f GetVelocity() const;
 	float GetMass() const;
 	float GetElasticity() const;
+	float GetGrip() const;
 
 	void SetAsKinematic();
 	bool IsKinematic() const;
@@ -37,5 +38,6 @@ private:
 	float m_max_speed;
 	float m_linear_drag;
 	float m_elasticity;
+	float m_grip;
 };
 

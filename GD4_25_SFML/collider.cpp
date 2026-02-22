@@ -119,13 +119,16 @@ void Collider::ResolveCollision(Collider* other, sf::Vector2f& normal, float& de
 		combinedMass = firstMass + secondMass ;
 		strength = -(1 + elasticity) * speedOnNormal / (combinedMass == 0 ? 1 : combinedMass);
 
+		sf::Vector2f gripAxis(-normal.y, normal.x);
 		if (!m_physics_body->IsKinematic())
 		{
-			m_physics_body->ApplyImpulse(strength, normal);
+			sf::Vector2f firstGrip = other->m_physics_body->GetVelocity().projectedOnto(gripAxis) * 0.001f * other->m_physics_body->GetGrip();
+			m_physics_body->ApplyImpulse(strength, (normal + firstGrip).normalized());
 		}
 		if (!other->m_physics_body->IsKinematic())
 		{
-			other->m_physics_body->ApplyImpulse(-strength, normal);
+			sf::Vector2f secondGrip = m_physics_body->GetVelocity().projectedOnto(gripAxis) * 0.001f * m_physics_body->GetGrip();
+			other->m_physics_body->ApplyImpulse(-strength, (normal + secondGrip).normalized());
 		}
 	}
 	else if (IsDynamic())

@@ -6,6 +6,9 @@
 #include "paddle.hpp"
 #include "wall.hpp"
 #include "ball.hpp"
+#include "shape_node.hpp"
+#include "player_barrier.hpp"
+#include "goal.hpp"
 
 void Level::CreateBounds(SceneNode* root, Physics* physics, sf::FloatRect world_bounds, float wall_width)
 {
@@ -22,29 +25,51 @@ void Level::CreateBounds(SceneNode* root, Physics* physics, sf::FloatRect world_
 }
 
 
-void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* texture_holder)
+void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* texture_holder, sf::FloatRect world_bounds)
 {
 	sf::Texture* wallGrey = &texture_holder->Get(TextureID::kWallGrey);
 
 	std::unique_ptr<SceneNode> background(new SceneNode());
-	std::unique_ptr<Wall> rectWall(new Wall(50, 20, 100, 860, physics, wallGrey));
-	background->AttachChild(std::move(rectWall));
+	std::unique_ptr<SceneNode> walls(new SceneNode());
+	std::unique_ptr<SceneNode> dynamic(new SceneNode());
 
-	std::unique_ptr<Wall> circleWall(new Wall(700, 350, 50, physics, wallGrey));
-	background->AttachChild(std::move(circleWall));
+	CreateBounds(&*walls, physics, world_bounds, 20);
 
-	std::vector<sf::Vector2f> triangle{ {-30, 0},{30, 0},{0, 60} };
-	std::unique_ptr<Wall> triWall(new Wall(500, 550, triangle, physics, wallGrey));
-	background->AttachChild(std::move(triWall));
+	sf::Vector2f center(world_bounds.getCenter());
+
+	std::unique_ptr<Ball> ball(new Ball(center.x - 20, center.y - 20, 20, physics));
+	dynamic->AttachChild(std::move(ball));
+
+	std::unique_ptr<Paddle> paddle_one(new Paddle(200, center.y, physics));
+	dynamic->AttachChild(std::move(paddle_one));
+
+	std::unique_ptr<Paddle> paddle_two(new Paddle(world_bounds.size.x - 200, center.y, physics));
+	dynamic->AttachChild(std::move(paddle_two));
 
 
-	std::unique_ptr<Ball> ball(new Ball(400, 300, 20, physics));
-	root->AttachChild(std::move(ball));
+	std::unique_ptr<ShapeNode> player_one_zone(new ShapeNode(400, world_bounds.size.y));
+	player_one_zone->setPosition({0,0});
+	player_one_zone->SetColor(sf::Color::Blue);
+	background->AttachChild(std::move(player_one_zone));
 
+	std::unique_ptr<ShapeNode> player_two_zone(new ShapeNode(400, world_bounds.size.y));
+	player_two_zone->setPosition({ world_bounds.size.x - 400, 0 });
+	player_two_zone->SetColor(sf::Color::Blue);
+	background->AttachChild(std::move(player_two_zone));
 
+	std::unique_ptr<PlayerBarrier> player_one_barrier(new PlayerBarrier(400, 0, 50, world_bounds.size.y, physics));
+	background->AttachChild(std::move(player_one_barrier));
+
+	std::unique_ptr<PlayerBarrier> player_two_barrier(new PlayerBarrier(world_bounds.size.x - 450, 0, 50, world_bounds.size.y, physics));
+	background->AttachChild(std::move(player_two_barrier));
+
+	std::unique_ptr<Goal> player_one_goal(new Goal(0, 0, 50, world_bounds.size.y, physics));
+	background->AttachChild(std::move(player_one_goal));
+
+	std::unique_ptr<Goal> player_two_goal(new Goal(world_bounds.size.x - 50, 0, 50, world_bounds.size.y, physics));
+	background->AttachChild(std::move(player_two_goal));
 
 	root->AttachChild(std::move(background));
-
-	std::unique_ptr<Paddle> paddle(new Paddle(physics));
-	root->AttachChild(std::move(paddle));
+	root->AttachChild(std::move(walls));
+	root->AttachChild(std::move(dynamic));
 }

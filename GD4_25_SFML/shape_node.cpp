@@ -11,20 +11,17 @@
 
 ShapeNode::ShapeNode(float width, float height) :
 	m_shape(new sf::RectangleShape({ width, height })),
-	m_is_colliding(false),
 	m_text_rect({ 0, 0 }, { width, height })
 {
 }
 
 ShapeNode::ShapeNode(float radius) :
 	m_shape(new sf::CircleShape(radius)),
-	m_is_colliding(false),
 	m_text_rect({ 0, 0 }, { radius * 2.f , radius * 2.f })
 {
 }
 
-ShapeNode::ShapeNode(std::vector<sf::Vector2f>& vertices) :
-	m_is_colliding(false)
+ShapeNode::ShapeNode(std::vector<sf::Vector2f>& vertices)
 {
 	sf::ConvexShape* polygon = new sf::ConvexShape(vertices.size());
 
@@ -70,22 +67,4 @@ void ShapeNode::SetTexture(sf::Texture &texture)
 void ShapeNode::DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(*m_shape, states);
-}
-
-void ShapeNode::UpdateCurrent(sf::Time dt, CommandQueue& commands)
-{
-	if (m_is_colliding)
-	{
-		SetColor(sf::Color::Green);
-		m_is_colliding = false;
-	}
-	else
-	{
-		SetColor(sf::Color::White);
-	}
-}
-
-void ShapeNode::OnCollision(Collider& other)
-{
-	m_is_colliding = true;
 }

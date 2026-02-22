@@ -10,7 +10,7 @@
 class Paddle : public Pawn
 {
 public:
-	Paddle(Physics* physics);
+	Paddle(float x, float y, Physics* physics);
 	void ApplyMove(float x, float y) override;
 
 private:

@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-PhysicsBody::PhysicsBody(SceneNode* controlled, Physics* physics, float mass, float maxSpeed, float drag, float elasticity) :
+PhysicsBody::PhysicsBody(SceneNode* controlled, Physics* physics, float mass, float maxSpeed, float drag, float elasticity, float grip) :
 	m_controlled_object(controlled),
 	m_physics(physics),
 	m_mass(mass),
@@ -15,7 +15,8 @@ PhysicsBody::PhysicsBody(SceneNode* controlled, Physics* physics, float mass, fl
 	m_velocity(),
 	m_acceleration(),
 	m_elasticity(elasticity),
-	m_kinematic(false)
+	m_kinematic(false),
+	m_grip(grip)
 {
 	m_physics->Register(this);
 }
@@ -70,6 +71,11 @@ float PhysicsBody::GetMass() const
 float PhysicsBody::GetElasticity() const
 {
 	return m_elasticity;
+}
+
+float PhysicsBody::GetGrip() const
+{
+	return m_grip;
 }
 
 void PhysicsBody::SetAsKinematic()
