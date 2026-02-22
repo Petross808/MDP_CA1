@@ -26,7 +26,7 @@ void Level::CreateBounds(SceneNode* root, Physics* physics, sf::FloatRect world_
 }
 
 
-void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* texture_holder, sf::FloatRect world_bounds)
+void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* texture_holder, sf::FloatRect world_bounds, SoundPlayer& sounds)
 {
 	sf::Texture* wallGrey = &texture_holder->Get(TextureID::kWallGrey);
 	sf::Texture* wallRed = &texture_holder->Get(TextureID::kWallRed);
@@ -44,12 +44,14 @@ void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* text
 	std::unique_ptr<Ball> ball(new Ball(center.x - 20, center.y - 20, 20, physics, stoneWhite));
 	dynamic->AttachChild(std::move(ball));
 
-	std::unique_ptr<Paddle> paddle_one(new Paddle(200, center.y, physics));
+	std::unique_ptr<Paddle> paddle_one(new Paddle(200, center.y, physics, sounds));
 	dynamic->AttachChild(std::move(paddle_one));
 
-	std::unique_ptr<Paddle> paddle_two(new Paddle(world_bounds.size.x - 200, center.y, physics));
+	std::unique_ptr<Paddle> paddle_two(new Paddle(world_bounds.size.x - 200, center.y, physics, sounds));
 	dynamic->AttachChild(std::move(paddle_two));
 
+	std::unique_ptr<Pickup> pickupTest(new Pickup(world_bounds.size.x - 200, center.y, 50, physics, PickupID::kSpeedBoost));
+	dynamic->AttachChild(std::move(pickupTest));
 
 	std::unique_ptr<ShapeNode> player_one_zone(new ShapeNode(400, world_bounds.size.y));
 	player_one_zone->setPosition({0,0});

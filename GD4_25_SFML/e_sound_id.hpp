@@ -8,5 +8,7 @@ enum class SoundID
 {
 	kButton,
 	kBounce,
+	kPickupCollect,
+	kPickupUse,
 	kSoundCount
 };
