@@ -23,12 +23,13 @@ class StateStack
 public:
 	struct Context
 	{
-		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, PlayerController::Array& players, MusicPlayer& music, SoundPlayer& sound);
+		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, ShaderHolder& shaders, PlayerController::Array& players, MusicPlayer& music, SoundPlayer& sound);
 		~Context();
 
 		sf::RenderWindow* window;
 		TextureHolder* textures;
 		FontHolder* fonts;
+		ShaderHolder* shaders;
 		PlayerController::Array* players;
 		MusicPlayer* music;
 		SoundPlayer* sound;

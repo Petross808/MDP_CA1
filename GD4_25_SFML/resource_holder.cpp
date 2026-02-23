@@ -29,7 +29,7 @@ void ResourceHolder<Identifier, Resource>::Load(const Identifier id, const std::
     }
     else if constexpr (std::is_same_v<Resource, sf::Shader>)
     {
-        loaded = resource->loadFromFile(filename, sf::Shader::Type::Vertex);
+        loaded = resource->loadFromFile(filename, sf::Shader::Type::Fragment);
     }
     else
     {

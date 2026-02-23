@@ -6,5 +6,6 @@
 #pragma once
 enum class ShaderID
 {
+	kCRTShaderFrag,
 	kShaderCount
 };

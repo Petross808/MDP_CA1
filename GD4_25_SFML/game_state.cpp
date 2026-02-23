@@ -8,7 +8,7 @@
 
 GameState::GameState(StateStack& stack) :
 	State(stack),
-	m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound),
+	m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound, *GetContext().shaders),
 	m_players(*GetContext().players)
 {
 	GetContext().music->Play(MusicID::kGameMusic);
