@@ -104,7 +104,7 @@ void World::BuildScene()
 
 	Level::CreateClassic(&m_scene_graph, &m_physics, &m_textures, m_world_bounds, m_sounds);
 
-	std::unique_ptr<Score> score(new Score(m_world_bounds.getCenter().x, m_world_bounds.getCenter().y + 100, m_fonts, m_score));
+	std::unique_ptr<Score> score(new Score(m_world_bounds.getCenter().x, m_world_bounds.getCenter().y - 250, m_fonts, m_score));
 	m_scene_graph.AttachChild(std::move(score));	
 }
 

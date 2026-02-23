@@ -11,7 +11,8 @@ Score::Score(float x, float y, FontHolder& fonts, ScoreData& score) :
 	sf::String initText("0 : 0");
 	std::unique_ptr<TextNode> textNode(new TextNode(fonts, initText));
 	m_text = &textNode->GetTextRef();
-	m_text->setCharacterSize(64);
+	m_text->setCharacterSize(96);
+	m_text->setStyle(sf::Text::Bold);
 	m_text->setOrigin(m_text->getLocalBounds().getCenter());
 	AttachChild(std::move(textNode));
 }
