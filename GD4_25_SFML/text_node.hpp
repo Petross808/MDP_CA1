@@ -10,8 +10,9 @@
 class TextNode : public SceneNode
 {
 public:
-	explicit TextNode(const FontHolder& fonts, std::string& text);
+	explicit TextNode(const FontHolder& fonts, sf::String& text);
 	void SetString(const std::string& text);
+	sf::Text& GetTextRef();
 
 private:
 	virtual void DrawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;

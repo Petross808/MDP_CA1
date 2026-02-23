@@ -15,6 +15,7 @@
 #include "resource_identifiers.hpp"
 #include "music_player.hpp"
 #include "sound_player.hpp"
+#include "score_data.hpp"
 
 class State;
 
@@ -23,7 +24,8 @@ class StateStack
 public:
 	struct Context
 	{
-		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, ShaderHolder& shaders, PlayerController::Array& players, MusicPlayer& music, SoundPlayer& sound);
+		Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, ShaderHolder& shaders,
+			PlayerController::Array& players, MusicPlayer& music, SoundPlayer& sound, ScoreData & score);
 		~Context();
 
 		sf::RenderWindow* window;
@@ -33,6 +35,7 @@ public:
 		PlayerController::Array* players;
 		MusicPlayer* music;
 		SoundPlayer* sound;
+		ScoreData* score;
 	};
 
 public:

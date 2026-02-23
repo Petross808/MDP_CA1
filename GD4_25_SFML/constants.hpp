@@ -16,4 +16,5 @@ constexpr auto kPlayerSpeed = 100.f;
 constexpr auto kTimePerFrame = 1.f / 60.f;
 //TODO review these
 constexpr auto kPickupDropChance = 3;
+constexpr auto kPointsToWin = 11;
 constexpr auto kGameOverToMenuPause = 3;

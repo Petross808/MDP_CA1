@@ -87,3 +87,9 @@ bool PhysicsBody::IsKinematic() const
 {
 	return m_kinematic;
 }
+
+void PhysicsBody::Reset()
+{
+	m_acceleration = {0, 0};
+	m_velocity = { 0, 0 };
+}
