@@ -14,12 +14,12 @@ SettingsState::SettingsState(StateStack& stack)
 {
     StateStack::Context context = GetContext();
 
-    float xOffset = 0;
+    float xOffset = 450;
     for (auto& player : *context.players)
     {
         Action* actionArray = player.GetActionArray();
 
-        float yOffset = 0;
+        float yOffset = 70;
         for (int x = 0; x < kActionCount; x++)
         {
             Action* a = &actionArray[x];
@@ -32,7 +32,7 @@ SettingsState::SettingsState(StateStack& stack)
     }
 
 	auto back_button = std::make_shared<gui::Button>(GetContext());
-    back_button->setPosition(sf::Vector2f(80.f, 475.f));
+    back_button->setPosition(sf::Vector2f(700.f, 600.f));
     back_button->SetText("Back");
     back_button->SetCallback(std::bind(&SettingsState::RequestStackPop, this));
     m_gui_container.Pack(back_button);
