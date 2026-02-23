@@ -33,6 +33,7 @@ private:
 
 	TextureHolder m_textures;
 	FontHolder m_fonts;
+	ShaderHolder m_shaders;
 
 	StateStack m_stack;
 

@@ -10,11 +10,12 @@ StateStack::PendingChange::PendingChange(std::function<void()> pending_call) : c
 {
 }
 
-StateStack::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts,
+StateStack::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, ShaderHolder& shaders,
 	PlayerController::Array& players, MusicPlayer& music, SoundPlayer& sound) :
 	window(&window),
 	textures(&textures),
 	fonts(&fonts),
+	shaders(&shaders),
 	players(&players),
 	music(&music),
 	sound(&sound)
@@ -26,6 +27,7 @@ StateStack::Context::~Context()
 	window = nullptr;
 	textures = nullptr;
 	fonts = nullptr;
+	shaders = nullptr;
 	players = nullptr;
 	music = nullptr;
 	sound = nullptr;

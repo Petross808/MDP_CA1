@@ -15,7 +15,7 @@
 class World
 {
 public:
-	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds);
+	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, ShaderHolder& shaders);
 	void Update(sf::Time dt);
 	void Draw();
 
@@ -35,6 +35,7 @@ private:
 	TextureHolder m_textures;
 	FontHolder& m_fonts;
 	SoundPlayer& m_sounds;
+	ShaderHolder& m_shaders;
 	SceneNode m_scene_graph;
 	sf::FloatRect m_world_bounds;
 	CommandQueue m_command_queue;
