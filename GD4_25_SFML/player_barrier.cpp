@@ -1,3 +1,8 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "player_barrier.hpp"
 #include "box_collider.hpp"
 #include "shape_node.hpp"
@@ -9,10 +14,6 @@ PlayerBarrier::PlayerBarrier(float x, float y, float width, float height, Physic
 	collider->SetLayer(CollisionLayer::kPlayerBarrier);
 	collider->SetIgnoreLayers(CollisionLayer::kBall);
 	AttachChild(std::move(collider));
-
-	std::unique_ptr<ShapeNode> shape(new ShapeNode(width, height));
-	shape->SetColor(sf::Color::Green);
-	AttachChild(std::move(shape));
 }
 
 PlayerBarrier::~PlayerBarrier() = default;
