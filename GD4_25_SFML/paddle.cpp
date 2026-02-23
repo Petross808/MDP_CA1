@@ -11,7 +11,7 @@
 #include "utility.hpp"
 
 
-Paddle::Paddle(int playerId, float x, float y, Physics* physics, SoundPlayer& sounds) :
+Paddle::Paddle(int playerId, float x, float y, Physics* physics, SoundPlayer& sounds, sf::Texture* texture) :
 	Pawn(playerId),
 	m_move_vector(),
 	m_physics_body(this, physics, 10000.f, 1500, 2.f, 0.1f, 1.f),
@@ -69,6 +69,10 @@ Paddle::Paddle(int playerId, float x, float y, Physics* physics, SoundPlayer& so
 	AttachChild(std::move(collider));
 
 	std::unique_ptr<ShapeNode> shape(new ShapeNode(polygon));
+	if (texture != nullptr)
+	{
+		shape->SetTexture(*texture);
+	}
 	AttachChild(std::move(shape));
 }
 

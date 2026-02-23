@@ -1,8 +1,13 @@
+/*
+* Petr Sulc - GD4b - D00261476
+* Jakub Polacek - GD4b - D00260171
+*/
+
 #include "goal.hpp"
 #include "box_collider.hpp"
 #include "shape_node.hpp"
 
-Goal::Goal(float x, float y, float width, float height, Physics* physics)
+Goal::Goal(float x, float y, float width, float height, Physics* physics, sf::Texture* texture)
 {
 	setPosition(sf::Vector2f(x, y));
 	std::unique_ptr<Collider> collider = std::make_unique<BoxCollider>(0.f, 0.f, width, height, physics, nullptr, true);
@@ -11,7 +16,14 @@ Goal::Goal(float x, float y, float width, float height, Physics* physics)
 	AttachChild(std::move(collider));
 
 	std::unique_ptr<ShapeNode> shape(new ShapeNode(width, height));
-	shape->SetColor(sf::Color::Magenta);
+	if (texture != nullptr)
+	{
+		shape->SetTexture(*texture);
+	}
+	else
+	{
+		shape->SetColor(sf::Color::Magenta);
+	}
 	AttachChild(std::move(shape));
 }
 

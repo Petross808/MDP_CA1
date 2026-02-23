@@ -78,13 +78,23 @@ void World::LoadTextures()
 	m_textures.Load(TextureID::kStoneWhite, "Media/Textures/t_flat_stone_white.png");
 	m_textures.Load(TextureID::kStoneGrey, "Media/Textures/t_flat_stone_grey.png");
 	m_textures.Load(TextureID::kStoneBlack, "Media/Textures/t_flat_stone_black.png");
+	m_textures.Load(TextureID::kTileGrey, "Media/Textures/t_tile_grey.png");
+	m_textures.Load(TextureID::kTileChess, "Media/Textures/t_tile_chess.png");
+	m_textures.Load(TextureID::kTileGreen, "Media/Textures/t_tile_green.png");
 	m_textures.Load(TextureID::kFire, "Media/Textures/t_paddle_fire.png");
+	m_textures.Load(TextureID::kAquamarine, "Media/Textures/t_paddle_aquamarine.png");
+	m_textures.Load(TextureID::kWater, "Media/Textures/t_paddle_water.png");
 	m_textures.Get(TextureID::kWallGrey).setRepeated(true);
 	m_textures.Get(TextureID::kWallRed).setRepeated(true);
 	m_textures.Get(TextureID::kStoneWhite).setRepeated(true);
 	m_textures.Get(TextureID::kStoneGrey).setRepeated(true);
 	m_textures.Get(TextureID::kStoneBlack).setRepeated(true);
+	m_textures.Get(TextureID::kTileGrey).setRepeated(true);
+	m_textures.Get(TextureID::kTileChess).setRepeated(true);
+	m_textures.Get(TextureID::kTileGreen).setRepeated(true);
 	m_textures.Get(TextureID::kFire).setRepeated(true);
+	m_textures.Get(TextureID::kAquamarine).setRepeated(true);
+	m_textures.Get(TextureID::kWater).setRepeated(true);
 
 	
 }

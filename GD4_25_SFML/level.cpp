@@ -31,40 +31,49 @@ void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* text
 	sf::Texture* wallGrey = &texture_holder->Get(TextureID::kWallGrey);
 	sf::Texture* wallRed = &texture_holder->Get(TextureID::kWallRed);
 	sf::Texture* stoneWhite = &texture_holder->Get(TextureID::kStoneWhite);
-	sf::Texture* stoneGrey = &texture_holder->Get(TextureID::kStoneGrey);
+	sf::Texture* stoneBlack = &texture_holder->Get(TextureID::kStoneBlack);
+	sf::Texture* tileGrey = &texture_holder->Get(TextureID::kTileGrey);
+	sf::Texture* tileChess = &texture_holder->Get(TextureID::kTileChess);
+	sf::Texture* tileGreen = &texture_holder->Get(TextureID::kTileGreen);
+	sf::Texture* fire = &texture_holder->Get(TextureID::kFire);
 
 	std::unique_ptr<SceneNode> background(new SceneNode());
 	std::unique_ptr<SceneNode> walls(new SceneNode());
 	std::unique_ptr<SceneNode> dynamic(new SceneNode());
 
-	CreateBounds(&*walls, physics, world_bounds, 20, wallRed);
+	CreateBounds(&*walls, physics, world_bounds, 10, wallRed);
 
 	sf::Vector2f center(world_bounds.getCenter());
 
-	std::unique_ptr<Ball> ball(new Ball(center.x - 20, center.y - 20, 20, physics, stoneWhite));
+	std::unique_ptr<Ball> ball(new Ball(center.x - 20, center.y - 20, 20, physics, fire));
 	dynamic->AttachChild(std::move(ball));
 
 
-	std::unique_ptr<Paddle> paddle_one(new Paddle(0, 200, center.y, physics, sounds));
+	std::unique_ptr<Paddle> paddle_one(new Paddle(0, 200, center.y, physics, sounds, stoneWhite));
 	dynamic->AttachChild(std::move(paddle_one));
 
-	std::unique_ptr<Paddle> paddle_two(new Paddle(1, world_bounds.size.x - 200, center.y, physics, sounds));
+	std::unique_ptr<Paddle> paddle_two(new Paddle(1, world_bounds.size.x - 200, center.y, physics, sounds, stoneWhite));
 	dynamic->AttachChild(std::move(paddle_two));
 
 
-	std::unique_ptr<PickupSpawner> pickupSpawner(new PickupSpawner(450, 20, 640, 800, physics, texture_holder, 5));
+	std::unique_ptr<PickupSpawner> pickupSpawner(new PickupSpawner(450, 20, 640, 800, physics, texture_holder, 10));
 	dynamic->AttachChild(std::move(pickupSpawner));
 
 
 	std::unique_ptr<ShapeNode> player_one_zone(new ShapeNode(400, world_bounds.size.y));
 	player_one_zone->setPosition({0,0});
-	player_one_zone->SetTexture(*stoneGrey);
+	player_one_zone->SetTexture(*tileGrey);
 	background->AttachChild(std::move(player_one_zone));
 
 	std::unique_ptr<ShapeNode> player_two_zone(new ShapeNode(400, world_bounds.size.y));
 	player_two_zone->setPosition({ world_bounds.size.x - 400, 0 });
-	player_two_zone->SetTexture(*stoneGrey);
+	player_two_zone->SetTexture(*tileGrey);
 	background->AttachChild(std::move(player_two_zone));
+
+	std::unique_ptr<ShapeNode> playing_field(new ShapeNode(800, world_bounds.size.y));
+	playing_field->setPosition({ 400, 0 });
+	playing_field->SetTexture(*tileGreen);
+	background->AttachChild(std::move(playing_field));
 
 	std::unique_ptr<PlayerBarrier> player_one_barrier(new PlayerBarrier(400, 0, 50, world_bounds.size.y, physics));
 	background->AttachChild(std::move(player_one_barrier));
@@ -72,10 +81,10 @@ void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* text
 	std::unique_ptr<PlayerBarrier> player_two_barrier(new PlayerBarrier(world_bounds.size.x - 450, 0, 50, world_bounds.size.y, physics));
 	background->AttachChild(std::move(player_two_barrier));
 
-	std::unique_ptr<Goal> player_one_goal(new Goal(0, 0, 50, world_bounds.size.y, physics));
+	std::unique_ptr<Goal> player_one_goal(new Goal(0, 0, 50, world_bounds.size.y, physics, tileChess));
 	background->AttachChild(std::move(player_one_goal));
 
-	std::unique_ptr<Goal> player_two_goal(new Goal(world_bounds.size.x - 50, 0, 50, world_bounds.size.y, physics));
+	std::unique_ptr<Goal> player_two_goal(new Goal(world_bounds.size.x - 50, 0, 50, world_bounds.size.y, physics, tileChess));
 	background->AttachChild(std::move(player_two_goal));
 
 	root->AttachChild(std::move(background));
