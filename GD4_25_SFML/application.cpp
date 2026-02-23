@@ -23,7 +23,7 @@ Application::Application() :
 
 	m_fonts.Load(FontID::kMain, "Media/Fonts/Sansation.ttf");
 	m_textures.Load(TextureID::kButton, "Media/Textures/Buttons.png");
-	m_textures.Load(TextureID::kTitleScreen, "Media/Textures/TitleScreen.png");
+	m_textures.Load(TextureID::kTitleScreen, "Media/Textures/title_screen.png");
 	m_shaders.Load(ShaderID::kCRTShaderFrag, "Media/Shaders/custom_crt_shader.frag");
 
 	m_stack.PushState<TitleState>();
