@@ -35,6 +35,7 @@ private:
 
 	TextureHolder m_textures;
 	FontHolder m_fonts;
+	ShaderHolder m_shaders;
 
 	MusicPlayer m_music;
 	SoundPlayer m_sound;

@@ -8,12 +8,13 @@
 #include "sound_node.hpp"
 #include "score.hpp"
 
-World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, ScoreData& score)
+World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, ShaderHolder& shaders, ScoreData & score)
 	: m_target(output_target)
 	, m_camera(output_target.getDefaultView())
 	, m_textures()
 	, m_fonts(font)
 	, m_sounds(sounds)
+	, m_shaders(shaders)
 	, m_scene_graph(ReceiverCategories::kScene)
 	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(m_camera.getSize().x, m_camera.getSize().y))
 	, m_physics()
@@ -43,8 +44,26 @@ void World::Update(sf::Time dt)
 
 void World::Draw()
 {
-	m_target.setView(m_camera);
-	m_target.draw(m_scene_graph);
+	m_scene_texture.clear();
+	m_scene_texture.setView(m_camera);
+	m_scene_texture.draw(m_scene_graph);
+	m_scene_texture.display();
+
+	sf::Shader& shader = m_shaders.Get(ShaderID::kCRTShaderFrag);
+	shader.setUniform("texture", m_scene_texture.getTexture());
+
+	sf::Vector2f output_size = static_cast<sf::Vector2f>(m_target.getSize());
+	sf::VertexArray vertices(sf::PrimitiveType::TriangleStrip, 4);
+	vertices[0] = sf::Vertex({ 0.f, 0.f }, sf::Color::White, { 0.f, 1.f });
+	vertices[1] = sf::Vertex({ output_size.x, 0 }, sf::Color::White, { 1, 1 });
+	vertices[2] = sf::Vertex({ 0, output_size.y }, sf::Color::White, { 0, 0 });
+	vertices[3] = sf::Vertex(sf::Vector2f(output_size), sf::Color::White, { 1, 0 });
+
+	sf::RenderStates state;
+	state.shader = &shader;
+	state.blendMode = sf::BlendNone;
+
+	m_target.draw(vertices, state);
 }
 
 CommandQueue& World::GetCommandQueue()
@@ -59,11 +78,13 @@ void World::LoadTextures()
 	m_textures.Load(TextureID::kStoneWhite, "Media/Textures/t_flat_stone_white.png");
 	m_textures.Load(TextureID::kStoneGrey, "Media/Textures/t_flat_stone_grey.png");
 	m_textures.Load(TextureID::kStoneBlack, "Media/Textures/t_flat_stone_black.png");
+	m_textures.Load(TextureID::kFire, "Media/Textures/t_paddle_fire.png");
 	m_textures.Get(TextureID::kWallGrey).setRepeated(true);
 	m_textures.Get(TextureID::kWallRed).setRepeated(true);
 	m_textures.Get(TextureID::kStoneWhite).setRepeated(true);
 	m_textures.Get(TextureID::kStoneGrey).setRepeated(true);
 	m_textures.Get(TextureID::kStoneBlack).setRepeated(true);
+	m_textures.Get(TextureID::kFire).setRepeated(true);
 }
 
 void World::BuildScene()
@@ -71,7 +92,7 @@ void World::BuildScene()
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
 	m_scene_graph.AttachChild(std::move(soundNode));
 
-	Level::CreateClassic(&m_scene_graph, &m_physics, &m_textures, m_world_bounds);
+	Level::CreateClassic(&m_scene_graph, &m_physics, &m_textures, m_world_bounds, m_sounds);
 
 	std::unique_ptr<Score> score(new Score(m_world_bounds.getCenter().x, m_world_bounds.getCenter().y + 100, m_fonts, m_score));
 	m_scene_graph.AttachChild(std::move(score));	

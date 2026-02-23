@@ -17,13 +17,14 @@ Application::Application() :
 		PlayerController(ReceiverCategories::kPlayer, 0),
 		PlayerController(ReceiverCategories::kPlayer, 1)
 	},
-	m_stack(StateStack::Context(m_window, m_textures, m_fonts, m_players, m_music, m_sound, m_score))
+	m_stack(StateStack::Context(m_window, m_textures, m_fonts, m_shaders, m_players, m_music, m_sound, m_score))
 {
 	m_window.setKeyRepeatEnabled(false);
 
 	m_fonts.Load(FontID::kMain, "Media/Fonts/Sansation.ttf");
 	m_textures.Load(TextureID::kButton, "Media/Textures/Buttons.png");
 	m_textures.Load(TextureID::kTitleScreen, "Media/Textures/TitleScreen.png");
+	m_shaders.Load(ShaderID::kCRTShaderFrag, "Media/Shaders/custom_crt_shader.frag");
 
 	m_stack.PushState<TitleState>();
 }

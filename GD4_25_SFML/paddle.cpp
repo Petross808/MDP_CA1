@@ -7,13 +7,15 @@
 #include "circle_collider.hpp"
 #include "polygon_collider.hpp"
 #include "shape_node.hpp"
+#include "sound_node.hpp"
 #include "utility.hpp"
 
 
-Paddle::Paddle(int playerId, float x, float y, Physics* physics) :
+Paddle::Paddle(int playerId, float x, float y, Physics* physics, SoundPlayer& sounds) :
 	Pawn(playerId),
 	m_move_vector(),
 	m_physics_body(this, physics, 10000.f, 1500, 2.f, 0.1f, 1.f),
+	m_sounds(sounds),
 	m_pickup_id(PickupID::kNone)
 {
 	std::vector<sf::Vector2f> polygon;
@@ -93,6 +95,7 @@ void Paddle::UsePickup()
 		{
 			sf::Vector2f boost = (m_move_vector.normalized() * 30000.f);
 			m_physics_body.AddForce(boost.x, boost.y);
+			m_sounds.Play(SoundID::kPickupUse);
 			m_pickup_id = PickupID::kNone;
 			break;
 		}
