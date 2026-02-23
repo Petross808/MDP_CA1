@@ -16,6 +16,7 @@ public:
 	~Ball();
 	virtual void OnCollision(Collider& other, CommandQueue& command_queue) override;
 	void GivePickup(PickupID pickup_id);
+	void ResetBall();
 
 protected:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
@@ -23,7 +24,9 @@ protected:
 private:
 	PhysicsBody m_physics_body;
 	Paddle* m_last_collided;
+	sf::Vector2f m_initial_pos;
 	float m_start_delay;
+	float m_timer;
 	Command m_bounce_sound;
 };
 

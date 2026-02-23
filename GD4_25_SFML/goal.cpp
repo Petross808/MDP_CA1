@@ -1,8 +1,14 @@
 #include "goal.hpp"
 #include "box_collider.hpp"
 #include "shape_node.hpp"
+#include "score.hpp"
+#include "ball.hpp"
 
-Goal::Goal(float x, float y, float width, float height, Physics* physics)
+Goal::Goal(int team, float x, float y, float width, float height, Physics* physics) :
+	m_team(team),
+	m_one_score(DerivedAction<Score>([](Score& s, sf::Time dt) { s.IncrementTeamOne(); }), ReceiverCategories::kScore),
+	m_two_score(DerivedAction<Score>([](Score& s, sf::Time dt) { s.IncrementTeamTwo(); }), ReceiverCategories::kScore),
+	m_reset_ball(DerivedAction<Ball>([](Ball& b, sf::Time dt) { b.ResetBall(); }), ReceiverCategories::kBall)
 {
 	setPosition(sf::Vector2f(x, y));
 	std::unique_ptr<Collider> collider = std::make_unique<BoxCollider>(0.f, 0.f, width, height, physics, nullptr, true);
@@ -19,5 +25,14 @@ Goal::~Goal() = default;
 
 void Goal::OnCollision(Collider& other, CommandQueue& command_queue)
 {
-	//TODO end the game
+	if (m_team == 0)
+	{
+		command_queue.Push(m_two_score);
+	}
+	else
+	{
+		command_queue.Push(m_one_score);
+	}
+
+	command_queue.Push(m_reset_ball);
 }

@@ -13,9 +13,11 @@ Ball::Ball(float x, float y, float radius, Physics* physics, sf::Texture* textur
 	SceneNode(ReceiverCategories::kBall),
 	m_physics_body(this, physics, 1, 1000, 0, 1.1f),
 	m_bounce_sound(DerivedAction<SoundNode>([this](SoundNode& s, sf::Time dt) { s.PlaySound(SoundID::kBounce, GetWorldPosition());}), ReceiverCategories::kSoundNode),
-	m_start_delay(3)
+	m_start_delay(2),
+	m_initial_pos(x, y),
+	m_timer(m_start_delay)
 {
-	setPosition(sf::Vector2f(x, y));
+	setPosition(m_initial_pos);
 	std::unique_ptr<Collider> collider = std::make_unique<CircleCollider>(0.f, 0.f, radius, physics, &m_physics_body);
 	collider->SetLayer(CollisionLayer::kBall);
 	AttachChild(std::move(collider));
@@ -48,14 +50,21 @@ void Ball::GivePickup(PickupID pickup_id)
   }
 }
 
+void Ball::ResetBall()
+{
+	setPosition(m_initial_pos);
+	m_physics_body.Reset();
+	m_timer = m_start_delay;
+}
+
 void Ball::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
-	if (m_start_delay <= 0) return;
+	if (m_timer <= 0) return;
 
-	m_start_delay -= dt.asSeconds();
+	m_timer -= dt.asSeconds();
 
-	if (m_start_delay <= 0)
+	if (m_timer <= 0)
 	{
-		m_physics_body.AddForce(-7500, 0);
+		m_physics_body.AddForce(-8000, 0);
 	}
 }

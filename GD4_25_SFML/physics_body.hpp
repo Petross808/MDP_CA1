@@ -27,6 +27,8 @@ public:
 	void SetAsKinematic();
 	bool IsKinematic() const;
 
+	void Reset();
+
 private:
 	SceneNode* m_controlled_object;
 	Physics* m_physics;

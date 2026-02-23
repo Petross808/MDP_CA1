@@ -11,11 +11,12 @@
 #include "command_queue.hpp"
 #include "sound_player.hpp"
 #include "physics.hpp"
+#include "score_data.hpp"
 
 class World
 {
 public:
-	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds);
+	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, ScoreData& score);
 	void Update(sf::Time dt);
 	void Draw();
 
@@ -39,5 +40,7 @@ private:
 	sf::FloatRect m_world_bounds;
 	CommandQueue m_command_queue;
 	Physics m_physics;
+	
+	ScoreData& m_score;
 };
 

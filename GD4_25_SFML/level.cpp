@@ -67,10 +67,10 @@ void Level::CreateClassic(SceneNode* root, Physics* physics, TextureHolder* text
 	std::unique_ptr<PlayerBarrier> player_two_barrier(new PlayerBarrier(world_bounds.size.x - 450, 0, 50, world_bounds.size.y, physics));
 	background->AttachChild(std::move(player_two_barrier));
 
-	std::unique_ptr<Goal> player_one_goal(new Goal(0, 0, 50, world_bounds.size.y, physics));
+	std::unique_ptr<Goal> player_one_goal(new Goal(0, 0, 0, 50, world_bounds.size.y, physics));
 	background->AttachChild(std::move(player_one_goal));
 
-	std::unique_ptr<Goal> player_two_goal(new Goal(world_bounds.size.x - 50, 0, 50, world_bounds.size.y, physics));
+	std::unique_ptr<Goal> player_two_goal(new Goal(1, world_bounds.size.x - 50, 0, 50, world_bounds.size.y, physics));
 	background->AttachChild(std::move(player_two_goal));
 
 	root->AttachChild(std::move(background));

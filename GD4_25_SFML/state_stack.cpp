@@ -11,13 +11,14 @@ StateStack::PendingChange::PendingChange(std::function<void()> pending_call) : c
 }
 
 StateStack::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts,
-	PlayerController::Array& players, MusicPlayer& music, SoundPlayer& sound) :
+	PlayerController::Array& players, MusicPlayer& music, SoundPlayer& sound, ScoreData& score) :
 	window(&window),
 	textures(&textures),
 	fonts(&fonts),
 	players(&players),
 	music(&music),
-	sound(&sound)
+	sound(&sound),
+	score(&score)
 {
 }
 

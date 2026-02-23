@@ -13,6 +13,7 @@
 #include "state_stack.hpp"
 #include "music_player.hpp"
 #include "sound_player.hpp"
+#include "score_data.hpp"
 
 class Application
 {
@@ -30,13 +31,14 @@ private:
 private:
 	sf::RenderWindow m_window;
 	PlayerController::Array m_players;
+	ScoreData m_score;
 
 	TextureHolder m_textures;
 	FontHolder m_fonts;
 
-	StateStack m_stack;
-
 	MusicPlayer m_music;
 	SoundPlayer m_sound;
+
+	StateStack m_stack;
 };
 

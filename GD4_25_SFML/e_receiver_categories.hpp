@@ -11,4 +11,5 @@ enum class ReceiverCategories
 	kPlayer = 1 << 1,
 	kBall = 1 << 2,
 	kSoundNode = 1 << 3,
+	kScore = 1 << 4
 };

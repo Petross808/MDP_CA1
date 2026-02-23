@@ -5,13 +5,15 @@
 
 #include "game_state.hpp"
 #include "pause_state.hpp"
+#include "game_over_state.hpp"
 
 GameState::GameState(StateStack& stack) :
 	State(stack),
-	m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound),
+	m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound, *GetContext().score),
 	m_players(*GetContext().players)
 {
 	GetContext().music->Play(MusicID::kGameMusic);
+	GetContext().score->Reset();
 }
 
 void GameState::Draw()
@@ -23,8 +25,12 @@ bool GameState::Update(sf::Time dt)
 {
 	m_world.Update(dt);
 
-	// TODO: Add end conditions and switch states
-
+	auto context = GetContext();
+	if (context.score->GetTeamOneScore() >= kPointsToWin || context.score->GetTeamTwoScore() >= kPointsToWin)
+	{
+		RequestStackPush<GameOverState>();
+	}
+	
 	CommandQueue& commands = m_world.GetCommandQueue();
 
 	for (auto& player : m_players)
