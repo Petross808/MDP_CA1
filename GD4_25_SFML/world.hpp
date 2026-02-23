@@ -11,12 +11,12 @@
 #include "command_queue.hpp"
 #include "sound_player.hpp"
 #include "physics.hpp"
-#include "score_data.hpp"
+#include "game_data.hpp"
 
 class World
 {
 public:
-	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, ShaderHolder& shaders, ScoreData & score);
+	explicit World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, ShaderHolder& shaders, GameData & game_data);
 	void Update(sf::Time dt);
 	void Draw();
 
@@ -42,6 +42,6 @@ private:
 	CommandQueue m_command_queue;
 	Physics m_physics;
 	
-	ScoreData& m_score;
+	GameData& m_game_data;
 };
 

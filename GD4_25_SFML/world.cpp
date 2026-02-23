@@ -8,7 +8,7 @@
 #include "sound_node.hpp"
 #include "score.hpp"
 
-World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, ShaderHolder& shaders, ScoreData & score)
+World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sounds, ShaderHolder& shaders, GameData & game_data)
 	: m_target(output_target)
 	, m_camera(output_target.getDefaultView())
 	, m_textures()
@@ -18,7 +18,7 @@ World::World(sf::RenderTarget& output_target, FontHolder& font, SoundPlayer& sou
 	, m_scene_graph(ReceiverCategories::kScene)
 	, m_world_bounds(sf::Vector2f(0.f, 0.f), sf::Vector2f(m_camera.getSize().x, m_camera.getSize().y))
 	, m_physics()
-	, m_score(score)
+	, m_game_data(game_data)
 {
 	static_cast<void>(m_scene_texture.resize({ m_target.getSize().x, m_target.getSize().y }));
 	LoadTextures();
@@ -102,9 +102,19 @@ void World::BuildScene()
 	std::unique_ptr<SoundNode> soundNode(new SoundNode(m_sounds));
 	m_scene_graph.AttachChild(std::move(soundNode));
 
-	Level::CreateClassic(&m_scene_graph, &m_physics, &m_textures, m_world_bounds, m_sounds);
-
-	std::unique_ptr<Score> score(new Score(m_world_bounds.getCenter().x, m_world_bounds.getCenter().y - 250, m_fonts, m_score));
+	switch (m_game_data.GetSelectedLevel())
+	{
+	case 0:
+		Level::CreateClassic(&m_scene_graph, &m_physics, &m_textures, m_world_bounds, m_sounds, m_game_data);
+		break;
+	case 1:
+		Level::CreateDiamond(&m_scene_graph, &m_physics, &m_textures, m_world_bounds, m_sounds, m_game_data);
+		break;
+	default:
+		break;
+	}
+	
+	std::unique_ptr<Score> score(new Score(m_world_bounds.getCenter().x, m_world_bounds.getCenter().y - 250, m_fonts, m_game_data));
 	m_scene_graph.AttachChild(std::move(score));	
 }
 

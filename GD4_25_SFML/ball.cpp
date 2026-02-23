@@ -7,6 +7,8 @@
 #include "shape_node.hpp"
 #include "circle_collider.hpp"
 #include "sound_node.hpp"
+#include "utility.hpp"
+#include "constants.hpp"
 
 Ball::Ball(float x, float y, float radius, Physics* physics, sf::Texture* texture) :
 	m_last_collided(),
@@ -65,6 +67,17 @@ void Ball::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 
 	if (m_timer <= 0)
 	{
-		m_physics_body.AddForce(-8000, 0);
+		sf::Vector2f dir(Utility::RandomInt(100) - 50, Utility::RandomInt(100) - 50);
+		
+		if (dir.y == 0)
+		{
+			dir.y = 5;
+		}
+		if (dir.x == 0)
+		{
+			dir.x = 20;
+		}
+
+		m_physics_body.ApplyImpulse(kInitialBallSpeed, dir);
 	}
 }

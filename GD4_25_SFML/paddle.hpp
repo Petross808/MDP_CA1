@@ -12,7 +12,7 @@
 class Paddle : public Pawn
 {
 public:
-	Paddle(int playerId, float x, float y, Physics* physics, SoundPlayer & sounds, sf::Texture* texture = nullptr);
+	Paddle(int playerId, int characterId, float x, float y, Physics* physics, SoundPlayer & sounds, sf::Texture* texture = nullptr);
 	void ApplyMove(float x, float y) override;
 	void SetPickup(PickupID pickup_id); // Jakub Polacek - GD4b - D00260171
 	void UsePickup() override; // Jakub Polacek - GD4b - D00260171
@@ -23,6 +23,7 @@ private:
 	virtual void OnCollision(Collider& other, CommandQueue& command_queue) override;
 
 private:
+	float m_speed;
 	sf::Vector2f m_move_vector;
 	PhysicsBody m_physics_body;
 	SoundPlayer& m_sounds;

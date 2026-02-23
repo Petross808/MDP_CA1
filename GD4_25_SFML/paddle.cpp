@@ -11,43 +11,54 @@
 #include "utility.hpp"
 
 
-Paddle::Paddle(int playerId, float x, float y, Physics* physics, SoundPlayer& sounds, sf::Texture* texture) :
+Paddle::Paddle(int playerId, int characterId, float x, float y, Physics* physics, SoundPlayer& sounds, sf::Texture* texture) :
 	Pawn(playerId),
+	m_speed(1500),
 	m_move_vector(),
-	m_physics_body(this, physics, 10000.f, 1500, 2.f, 0.1f, 1.f),
+	m_physics_body(this, physics, 10000.f, 1500, 2.f, 0.1f, 0.8f),
 	m_sounds(sounds),
 	m_pickup_id(PickupID::kNone)
 {
 	std::vector<sf::Vector2f> polygon;
-	switch (4)
+	switch (characterId)
 	{
-	case 1:
+	case 0:
 		polygon = {
-			{ 0.0000f, 0.0000f },
-			{ 0.0000f, -1.0000f },
-			{ 1.0000f, -1.0000f },
-			{ 1.0000f, 0.0000f }
+			{ 0.f, 0.f },
+			{ 0.f, -3.f },
+			{ 1.f, -3.f },
+			{ 1.f, 0.f }
 		};
 		break;
+	case 1:
+		polygon = {
+			{0, 2}, 
+			{1, 0.75f}, 
+			{1, -0.75f}, 
+			{0, -2}, 
+			{-1, -0.75f}, 
+			{-1, 0.75f} };
+		m_physics_body = PhysicsBody(this, physics, 10000.f, 1500, 2.5f, 0.1f, 0.5f);
+		m_speed = 2000;
+		break;
 	case 2:
-		polygon = { {-1, 0},{1, 0},{0, 2} };
+		polygon = {
+			{ 0.f, 3.f },
+			{ 1.f, 0.f },
+			{ 0.f, -3.f },
+			{ -1.f, 0.f }
+		};
+		m_physics_body = PhysicsBody(this, physics, 10000.f, 1500, 2.f, 0.1f, 0.2f);
 		break;
 	case 3:
 		polygon = {
-			{ 0.0000f, -1.0000f },
-			{ 0.9511f, -0.3090f },
-			{ 0.5878f, 0.8090f },
-			{ -0.5878f, 0.8090f },
-			{ -0.9511f, -0.3090f }
+			{ 0.f, 0.f },
+			{ 0.f, -2.f },
+			{ 0.5f, -2.f },
+			{ 0.5f, 0.f }
 		};
-		break;
-	case 4:
-		polygon = {
-			{ 0.0000f, 0.0000f },
-			{ 0.0000f, -3.0000f },
-			{ 1.0000f, -3.0000f },
-			{ 1.0000f, 0.0000f }
-		};
+		m_physics_body = PhysicsBody(this, physics, 5000.f, 5000.f, 1.5f, 0.2f, 2.f);
+		m_speed = 10000;
 		break;
 	default:
 		break;
@@ -104,7 +115,6 @@ void Paddle::UsePickup()
 			break;
 		}
 		default:
-			throw std::invalid_argument("error while trying to use pickups");
 			break;
 	}
 }

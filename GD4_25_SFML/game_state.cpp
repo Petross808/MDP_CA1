@@ -9,11 +9,11 @@
 
 GameState::GameState(StateStack& stack) :
 	State(stack),
-	m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound, *GetContext().shaders, *GetContext().score),
+	m_world(*GetContext().window, *GetContext().fonts, *GetContext().sound, *GetContext().shaders, *GetContext().game_data),
 	m_players(*GetContext().players)
 {
 	GetContext().music->Play(MusicID::kGameMusic);
-	GetContext().score->Reset();
+	GetContext().game_data->Reset();
 }
 
 void GameState::Draw()
@@ -26,7 +26,7 @@ bool GameState::Update(sf::Time dt)
 	m_world.Update(dt);
 
 	auto context = GetContext();
-	if (context.score->GetTeamOneScore() >= kPointsToWin || context.score->GetTeamTwoScore() >= kPointsToWin)
+	if (context.game_data->GetTeamOneScore() >= kPointsToWin || context.game_data->GetTeamTwoScore() >= kPointsToWin)
 	{
 		RequestStackPush<GameOverState>();
 	}

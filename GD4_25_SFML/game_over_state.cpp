@@ -12,7 +12,7 @@ GameOverState::GameOverState(StateStack& stack)
 
     auto context = GetContext();
 
-    if (context.score->GetTeamOneScore() > context.score->GetTeamTwoScore())
+    if (context.game_data->GetTeamOneScore() > context.game_data->GetTeamTwoScore())
     {
         m_game_over_text.setString("Player 1 wins!");
     }
