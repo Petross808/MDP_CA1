@@ -10,6 +10,7 @@
 #include "utility.hpp"
 #include "button.hpp"
 #include "game_state.hpp"
+#include "level_select_state.hpp"
 #include "settings_state.hpp"
 
 MenuState::MenuState(StateStack& stack) : State(stack), m_background_sprite(GetContext().textures->Get(TextureID::kTitleScreen))
@@ -19,8 +20,7 @@ MenuState::MenuState(StateStack& stack) : State(stack), m_background_sprite(GetC
     play_button->SetText("Play");
     play_button->SetCallback([this]()
         {
-            RequestStackPop();
-            RequestStackPush<GameState>();
+            RequestStackPush<LevelSelectState>();
         });
 
     auto settings_button = std::make_shared<gui::Button>(GetContext());

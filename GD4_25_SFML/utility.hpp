@@ -19,6 +19,7 @@ public:
 	static double toRadians(double degrees);
 	static double ToDegrees(double angle);
 	static int RandomInt(int exclusive_max);
+	static int RandomInt(int inclusive_min, int exclusive_max);
 	static float Length(sf::Vector2f vector);
 	static float SqrLength(sf::Vector2f vector);
 	static float DotProduct(sf::Vector2f first, sf::Vector2f second);

@@ -55,11 +55,11 @@ bool TitleState::Update(sf::Time dt)
 
 bool TitleState::HandleEvent(const sf::Event& event)
 {
-    const auto* key_pressed = event.getIf<sf::Event::KeyPressed>();
+    const auto* key_pressed = event.getIf<sf::Event::KeyReleased>();
     if (key_pressed)
     {
         RequestStackPop();
         RequestStackPush<MenuState>();
     }
-    return true;
+    return false;
 }

@@ -1,9 +1,9 @@
 #include "score.hpp"
 #include "text_node.hpp"
 
-Score::Score(float x, float y, FontHolder& fonts, ScoreData& score) : 
+Score::Score(float x, float y, FontHolder& fonts, GameData& game_data) : 
 	SceneNode(ReceiverCategories::kScore),
-	m_score(score),
+	m_game_data(game_data),
 	m_team_one(0),
 	m_team_two(0)
 {
@@ -22,14 +22,14 @@ Score::~Score() = default;
 void Score::IncrementTeamOne()
 {
 	++m_team_one;
-	m_score.SetTeamOneScore(m_team_one);
+	m_game_data.SetTeamOneScore(m_team_one);
 	UpdateText();
 }
 
 void Score::IncrementTeamTwo()
 {
 	++m_team_two;
-	m_score.SetTeamTwoScore(m_team_two);
+	m_game_data.SetTeamTwoScore(m_team_two);
 	UpdateText();
 }
 

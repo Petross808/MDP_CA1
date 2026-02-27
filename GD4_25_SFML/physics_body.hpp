@@ -14,15 +14,21 @@ public:
 	PhysicsBody(SceneNode* controlled, Physics* physics, float mass, float maxSpeed, float drag, float elasticity, float grip = 0);
 	~PhysicsBody();
 
+	void SetValues(float mass, float maxSpeed, float drag, float elasticity, float grip = 0);
+
 	void AddForce(float x, float y);
 	void ApplyImpulse(float strength, sf::Vector2f normal);
 	void Move(sf::Vector2f delta);
 	void Simulate(sf::Time dt);
 
 	sf::Vector2f GetVelocity() const;
+	sf::Vector2f GetDrag() const;
 	float GetMass() const;
 	float GetElasticity() const;
 	float GetGrip() const;
+
+	void SetVelocity(int x, int y);
+	void ClampVelocity(float upper_limit);
 
 	void SetAsKinematic();
 	bool IsKinematic() const;

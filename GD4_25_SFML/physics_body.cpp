@@ -26,10 +26,19 @@ PhysicsBody::~PhysicsBody()
 	m_physics->Unregister(this);
 }
 
+void PhysicsBody::SetValues(float mass, float maxSpeed, float drag, float elasticity, float grip)
+{
+	m_mass = mass;
+	m_max_speed = maxSpeed;
+	m_linear_drag = drag;
+	m_elasticity = elasticity;
+	m_grip = grip;
+}
+
 void PhysicsBody::AddForce(float x, float y)
 {
-	m_acceleration.x += x;
-	m_acceleration.y += y;
+	m_acceleration.x += x / m_mass;
+	m_acceleration.y += y / m_mass;
 }
 
 void PhysicsBody::ApplyImpulse(float strength, sf::Vector2f normal)
@@ -45,12 +54,15 @@ void PhysicsBody::Move(sf::Vector2f delta)
 void PhysicsBody::Simulate(sf::Time dt)
 {
 	float dts = dt.asSeconds();
+
+	m_velocity += GetDrag() * (dts / m_mass);
+	sf::Vector2f velocityBeforeAcc(m_velocity);
+
 	m_velocity += m_acceleration * dts;
-	m_velocity -= m_velocity * m_linear_drag * dts;
 	
 	if (m_velocity.lengthSquared() > m_max_speed * m_max_speed)
 	{
-		m_velocity = m_velocity.normalized() * m_max_speed;
+		m_velocity = m_velocity.normalized() * velocityBeforeAcc.length();
 	}
 	
 	Move(m_velocity * dts);
@@ -61,6 +73,11 @@ void PhysicsBody::Simulate(sf::Time dt)
 sf::Vector2f PhysicsBody::GetVelocity() const
 {
 	return m_velocity;
+}
+
+sf::Vector2f PhysicsBody::GetDrag() const
+{
+	return sf::Vector2f(-m_velocity * m_linear_drag);
 }
 
 float PhysicsBody::GetMass() const
@@ -76,6 +93,19 @@ float PhysicsBody::GetElasticity() const
 float PhysicsBody::GetGrip() const
 {
 	return m_grip;
+}
+
+void PhysicsBody::SetVelocity(int x, int y)
+{
+	m_velocity = sf::Vector2f(x, y);
+}
+
+void PhysicsBody::ClampVelocity(float upper_limit)
+{
+	if (m_velocity.lengthSquared() > upper_limit * upper_limit)
+	{
+		m_velocity = m_velocity.normalized() * upper_limit;
+	}
 }
 
 void PhysicsBody::SetAsKinematic()
