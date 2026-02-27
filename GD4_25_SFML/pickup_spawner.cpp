@@ -1,4 +1,5 @@
 /*
+* Written by:
 * Jakub Polacek - GD4b - D00260171
 */
 

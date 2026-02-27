@@ -1,3 +1,8 @@
+/*
+* Written by:
+* Petr Sulc - GD4b - D00261476
+*/
+
 #include "level_select_state.hpp"
 #include "button.hpp"
 #include "game_state.hpp"

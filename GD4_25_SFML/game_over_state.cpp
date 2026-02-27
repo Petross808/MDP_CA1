@@ -1,3 +1,8 @@
+/*
+* Written in class, edited by:
+* Petr Sulc - GD4b - D00261476
+*/
+
 #include "game_over_state.hpp"
 #include "utility.hpp"
 #include "menu_state.hpp"

@@ -1,3 +1,8 @@
+/*
+* Written in class, edited by:
+* Petr Sulc - GD4b - D00261476
+*/
+
 #pragma once
 #include <SFML/Graphics/Text.hpp>
 #include "state.hpp"

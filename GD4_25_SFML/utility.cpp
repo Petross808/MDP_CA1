@@ -1,4 +1,5 @@
 /*
+* Written in class, edited by:
 * Petr Sulc - GD4b - D00261476
 * Jakub Polacek - GD4b - D00260171
 */
@@ -42,12 +43,6 @@ void Utility::CentreOrigin(sf::Text& text)
 {
     sf::FloatRect bounds = text.getLocalBounds();
     text.setOrigin(sf::Vector2f(std::floor(bounds.position.x + bounds.size.x / 2.f), std::floor(bounds.position.y + bounds.size.y / 2.f)));
-}
-
-void Utility::CentreOrigin(Animation& animation)
-{
-    sf::FloatRect bounds = animation.GetLocalBounds();
-    animation.setOrigin(sf::Vector2f(std::floor(bounds.position.x + bounds.size.x / 2.f), std::floor(bounds.position.y + bounds.size.y / 2.f)));
 }
 
 std::string Utility::toString(sf::Keyboard::Scancode key)
