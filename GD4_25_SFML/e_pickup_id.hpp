@@ -6,5 +6,9 @@
 enum class PickupID
 {
 	kNone,
-	kSpeedBoost
+	kSpeedBoost,
+	kXFlip,
+	kYFlip,
+	kSlow,
+	kPickupCount
 };

@@ -41,6 +41,7 @@ public:
 
 	bool IsDynamic() const;
 	bool IsTrigger() const;
+	CollisionLayer GetLayer() const;
 	void SetLayer(CollisionLayer layer);
 	void SetIgnoreLayers(unsigned int layers);
 

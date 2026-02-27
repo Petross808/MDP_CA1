@@ -71,6 +71,12 @@ int Utility::RandomInt(int exclusive_max)
     return distr(RandomEngine);
 }
 
+int Utility::RandomInt(int inclusive_min, int exclusive_max)
+{
+    std::uniform_int_distribution<> distr(inclusive_min, exclusive_max - 1);
+    return distr(RandomEngine);
+}
+
 float Utility::Length(sf::Vector2f vector)
 {
     return sqrtf(powf(vector.x, 2) + powf(vector.y, 2));

@@ -32,7 +32,9 @@ void PickupSpawner::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 		float x = static_cast<float>(Utility::RandomInt(m_width));
 		float y = static_cast<float>(Utility::RandomInt(m_height));
 		sf::Texture* water = &m_texture_holder->Get(TextureID::kWater);
-		std::unique_ptr<Pickup> pickupTest(new Pickup(x, y, 30, m_physics_ptr, PickupID::kSpeedBoost, water));
+
+		int id = Utility::RandomInt(1, static_cast<int>(PickupID::kPickupCount));
+		std::unique_ptr<Pickup> pickupTest(new Pickup(x, y, 30, m_physics_ptr, static_cast<PickupID>(id), water));
 		this->AttachChild(std::move(pickupTest));
 		m_cooldown = m_spawn_time;
 		return;

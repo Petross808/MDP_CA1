@@ -18,6 +18,8 @@ public:
 	void GivePickup(PickupID pickup_id);
 	void ResetBall();
 
+	void MultiplyVelocity(float multX, float multY);
+
 protected:
 	virtual void UpdateCurrent(sf::Time dt, CommandQueue& commands) override;
 
@@ -28,6 +30,8 @@ private:
 	float m_start_delay;
 	float m_timer;
 	Command m_bounce_sound;
+	int m_bounce_limit;
+	float m_speed_limit;
 };
 
 

@@ -36,6 +36,11 @@ bool Collider::IsTrigger() const
 	return m_is_trigger;
 }
 
+CollisionLayer Collider::GetLayer() const
+{
+	return m_layer;
+}
+
 void Collider::SetLayer(CollisionLayer layer)
 {
 	m_layer = layer;

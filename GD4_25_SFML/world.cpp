@@ -105,17 +105,17 @@ void World::BuildScene()
 	switch (m_game_data.GetSelectedLevel())
 	{
 	case 0:
-		Level::CreateClassic(&m_scene_graph, &m_physics, &m_textures, m_world_bounds, m_sounds, m_game_data);
+		Level::CreateClassic(m_scene_graph, m_physics, m_textures, m_world_bounds, m_sounds, m_game_data, m_command_queue);
 		break;
 	case 1:
-		Level::CreateDiamond(&m_scene_graph, &m_physics, &m_textures, m_world_bounds, m_sounds, m_game_data);
+		Level::CreateDiamond(m_scene_graph, m_physics, m_textures, m_world_bounds, m_sounds, m_game_data, m_command_queue);
 		break;
 	default:
 		break;
 	}
 	
 	std::unique_ptr<Score> score(new Score(m_world_bounds.getCenter().x, m_world_bounds.getCenter().y - 250, m_fonts, m_game_data));
-	m_scene_graph.AttachChild(std::move(score));	
+	m_scene_graph.AttachChild(std::move(score));
 }
 
 sf::FloatRect World::GetViewBounds() const

@@ -17,7 +17,9 @@ Ball::Ball(float x, float y, float radius, Physics* physics, sf::Texture* textur
 	m_bounce_sound(DerivedAction<SoundNode>([this](SoundNode& s, sf::Time dt) { s.PlaySound(SoundID::kBounce, GetWorldPosition());}), ReceiverCategories::kSoundNode),
 	m_start_delay(2),
 	m_initial_pos(x, y),
-	m_timer(m_start_delay)
+	m_timer(m_start_delay),
+	m_bounce_limit(),
+	m_speed_limit(500.f)
 {
 	setPosition(m_initial_pos);
 	std::unique_ptr<Collider> collider = std::make_unique<CircleCollider>(0.f, 0.f, radius, physics, &m_physics_body);
@@ -36,12 +38,32 @@ Ball::~Ball() = default;
 
 void Ball::OnCollision(Collider& other, CommandQueue& command_queue)
 {
-	Paddle* paddle = dynamic_cast<Paddle*>(other.GetParent());
-	if (paddle != nullptr)
+	if (other.GetLayer() & CollisionLayer::kWall)
 	{
-		m_last_collided = paddle;
+		m_bounce_limit += 1;
+	} 
+	else if (other.GetLayer() & CollisionLayer::kPlayer)
+	{
+		Paddle* paddle = dynamic_cast<Paddle*>(other.GetParent());
+		if (paddle != nullptr)
+		{
+			m_last_collided = paddle;
+			m_bounce_limit = 0; 
+			m_speed_limit += 50;
+		}
 	}
-	command_queue.Push(m_bounce_sound);
+
+	if (other.GetLayer() != CollisionLayer::kPickup)
+	{
+		command_queue.Push(m_bounce_sound);
+	}
+	
+	if (m_bounce_limit >= 10)
+	{
+		sf::Vector2f dir(Utility::RandomInt(100) - 50, Utility::RandomInt(100) - 50);
+		m_physics_body.ApplyImpulse(10, dir);
+		m_bounce_limit = 0;
+	}
 }
 
 void Ball::GivePickup(PickupID pickup_id)
@@ -57,10 +79,20 @@ void Ball::ResetBall()
 	setPosition(m_initial_pos);
 	m_physics_body.Reset();
 	m_timer = m_start_delay;
+	m_bounce_limit = 0;
+	m_speed_limit = 500.f;
+}
+
+void Ball::MultiplyVelocity(float multX, float multY)
+{
+	auto vel = m_physics_body.GetVelocity();
+	m_physics_body.SetVelocity(vel.x * multX, vel.y * multY);
 }
 
 void Ball::UpdateCurrent(sf::Time dt, CommandQueue& commands)
 {
+	m_physics_body.ClampVelocity(m_speed_limit);
+
 	if (m_timer <= 0) return;
 
 	m_timer -= dt.asSeconds();
