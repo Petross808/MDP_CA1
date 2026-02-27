@@ -44,7 +44,7 @@ Paddle::Paddle(int playerId, int characterId, float x, float y, Physics& physics
 			{0, -2}, 
 			{-1, -0.75f}, 
 			{-1, 0.75f} };
-		m_physics_body.SetValues(10.f, 400.f, 75.f, 0.1f, 0.5f);
+		m_physics_body.SetValues(10.f, 500.f, 75.f, 0.1f, 0.5f);
 		break;
 	case 2:
 		polygon = {

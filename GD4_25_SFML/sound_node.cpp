@@ -9,7 +9,7 @@ SoundNode::SoundNode(SoundPlayer& player) : SceneNode(ReceiverCategories::kSound
 {
 }
 
-void SoundNode::PlaySound(SoundID sound, sf::Vector2f position)
+void SoundNode::PlaySound(SoundID sound, sf::Vector2f position, float pitch)
 {
-    m_sounds.Play(sound, position);
+    m_sounds.Play(sound, position, pitch);
 }

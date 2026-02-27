@@ -11,7 +11,7 @@ class SoundNode : public SceneNode
 {
 public:
 	SoundNode(SoundPlayer& player);
-	void PlaySound(SoundID sound, sf::Vector2f position);
+	void PlaySound(SoundID sound, sf::Vector2f position, float pitch = 1);
 
 private:
 	SoundPlayer& m_sounds;

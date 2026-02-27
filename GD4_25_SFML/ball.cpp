@@ -14,7 +14,7 @@ Ball::Ball(float x, float y, float radius, Physics* physics, sf::Texture* textur
 	m_last_collided(),
 	SceneNode(ReceiverCategories::kBall),
 	m_physics_body(this, physics, 1, 1000, 0, 1.1f),
-	m_bounce_sound(DerivedAction<SoundNode>([this](SoundNode& s, sf::Time dt) { s.PlaySound(SoundID::kBounce, GetWorldPosition());}), ReceiverCategories::kSoundNode),
+	m_bounce_sound(DerivedAction<SoundNode>([this](SoundNode& s, sf::Time dt) { s.PlaySound(SoundID::kBounce, GetWorldPosition(), 1 + Utility::RandomInt(-5,6) * 0.005f);}), ReceiverCategories::kSoundNode),
 	m_start_delay(2),
 	m_initial_pos(x, y),
 	m_timer(m_start_delay),

@@ -36,7 +36,7 @@ void SoundPlayer::Play(SoundID effect)
 	Play(effect, GetListenerPosition());
 }
 
-void SoundPlayer::Play(SoundID effect, sf::Vector2f position)
+void SoundPlayer::Play(SoundID effect, sf::Vector2f position, float pitch)
 {
 	m_sounds.emplace_back(m_sound_buffers.Get(effect));
 	sf::Sound& sound = m_sounds.back();
@@ -46,6 +46,7 @@ void SoundPlayer::Play(SoundID effect, sf::Vector2f position)
 	sound.setAttenuation(Attenuation);
 	sound.setMinDistance(MinDistance3D);
 	sound.setVolume(100.f);
+	sound.setPitch(pitch);
 
 	sound.play();
 }

@@ -21,7 +21,7 @@ public:
 	SoundPlayer();
 
 	void Play(SoundID effect);
-	void Play(SoundID effect, sf::Vector2f position);
+	void Play(SoundID effect, sf::Vector2f position, float pitch = 1);
 
 	void RemoveStoppedSounds();
 	void SetListenerPosition(sf::Vector2f position);

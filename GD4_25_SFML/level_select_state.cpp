@@ -38,7 +38,7 @@ LevelSelectState::LevelSelectState(StateStack& stack) :
 		
 		auto player_one = std::make_shared<gui::Button>(GetContext());
 		player_one->setPosition(sf::Vector2f(x, 50.f + y + 50.f * i));
-		player_one->SetText("Player 1");
+		player_one->SetText("Player " + std::to_string(i + 1));
 		player_one->SetCallback([this, playerLabel, data, i]()
 			{
 				CycleCharacter(i);
